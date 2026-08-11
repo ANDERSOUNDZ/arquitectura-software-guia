@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diseño y Arquitectura de Software · Resumen</title>
+<meta name="description" content="Resumen visual de Diseño y Arquitectura de Software: calidad, UML, persistencia, seguridad, estilos, patrones, frameworks, SOLID y calidad.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e0f12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff5500'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='16' font-weight='bold' fill='%230e0f12' text-anchor='middle'%3ESW%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#0e0f12;
+  --bg-2:#12141a;
+  --card:#1a1d24;
+  --card-2:#20242c;
+  --elev:#252a33;
+  --border:#2b313c;
+  --border-2:#333a46;
+  --text:#f2f2f4;
+  --text-soft:#b6bcc6;
+  --text-dim:#8a93a1;
+  --primary:#ff5500;
+  --primary-soft:#ff6a1f;
+  --primary-fill:#d63d00;
+  --primary-dim:rgba(255,85,0,.12);
+  --blue:#8fb0ff;
+  --blue-soft:rgba(126,166,255,.12);
+  --green:#3ec58f;
+  --green-soft:rgba(46,189,133,.12);
+  --red:#ff8a84;
+  --red-soft:rgba(255,107,99,.12);
+  --amber:#ffc48a;
+  --amber-soft:rgba(255,184,107,.12);
+  --radius:12px;
+  --radius-sm:8px;
+  --maxw:1080px;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.7;
+  font-size:18px;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1000px 500px at 70% -10%, rgba(255,85,0,.06), transparent 60%),
+    radial-gradient(800px 400px at 0% 20%, rgba(126,166,255,.04), transparent 60%);
+}
+img{max-width:100%;height:auto}
+a{color:var(--primary)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{
+  outline:3px solid var(--primary);
+  outline-offset:2px;
+  border-radius:4px;
+}
+::selection{background:var(--primary-fill);color:#fff}
+
+/* ---------- Skip link ---------- */
+.skip-link{
+  position:absolute;left:16px;top:-60px;z-index:200;
+  background:var(--primary-fill);color:#fff;padding:12px 18px;border-radius:8px;
+  font-weight:600;transition:top .2s ease;
+}
+.skip-link:focus{top:14px}
+
+/* ---------- Sidebar (menú vertical) ---------- */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  width:248px;background:var(--bg-2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:none;
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  font-family:var(--font-display);font-weight:700;color:#fff;font-size:15.5px;text-decoration:none;
+}
+.brand-badge{
+  width:40px;height:40px;flex:none;border-radius:11px;background:var(--primary-fill);
+  display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;color:#fff;
+}
+.sidebar-brand small{display:block;font-family:var(--font-body);font-weight:400;font-size:11.5px;color:var(--text-dim);letter-spacing:.3px;margin-top:2px}
+.sidebar nav{flex:1;overflow-y:auto;padding:14px 10px}
+.sidebar nav ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.sidebar nav a{
+  display:flex;align-items:center;gap:12px;
+  color:var(--text-soft);text-decoration:none;font-size:15px;font-weight:500;
+  padding:11px 13px;border-radius:9px;transition:color .12s ease,background .12s ease;
+}
+.sidebar nav a .num{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);min-width:20px}
+.sidebar nav a:hover{color:#fff;background:var(--elev)}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);line-height:1.6}
+.burger{
+  position:fixed;top:14px;left:14px;z-index:110;
+  background:var(--card);border:1px solid var(--border-2);
+  color:var(--text);border-radius:10px;width:44px;height:44px;cursor:pointer;
+  align-items:center;justify-content:center;display:none;
+}
+.burger svg{width:22px;height:22px;pointer-events:none}
+.burger .ic-close{display:none}
+@media(min-width:901px){
+  main{margin-left:248px}
+  footer{margin-left:248px}
+  .burger{display:none}
+}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.5)}
+  .burger{display:flex}
+  main{transition:filter .25s ease}
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative;z-index:1;
+  background:linear-gradient(180deg,#12141a 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.hero-inner{max-width:var(--maxw);margin:0 auto;padding:64px 20px 72px;position:relative}
+.eyebrow{
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--primary);display:flex;align-items:center;gap:10px;
+  animation:heroUp .6s ease both;
+}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--primary-fill)}
+.hero h1{
+  font-family:var(--font-display);font-size:clamp(36px,6vw,62px);
+  line-height:1.05;margin:18px 0 16px;color:#fff;text-wrap:balance;
+  animation:heroUp .6s .08s ease both;
+}
+.hero h1 .accent{color:var(--primary)}
+.hero .lede{
+  max-width:660px;font-size:clamp(17px,2vw,20px);color:var(--text-soft);margin:0 0 32px;
+  animation:heroUp .6s .16s ease both;
+}
+.hero-stats{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 36px;animation:heroUp .6s .24s ease both}
+.hero-stats .stat{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;
+}
+.hero-stats .stat b{display:block;font-family:var(--font-display);font-size:26px;color:#fff}
+.hero-stats .stat span{font-size:13px;color:var(--text-dim)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;animation:heroUp .6s .32s ease both}
+@keyframes heroUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-body);font-weight:600;font-size:16px;
+  padding:14px 22px;border-radius:10px;text-decoration:none;cursor:pointer;
+  border:1px solid transparent;transition:transform .12s ease,box-shadow .12s ease,background .12s ease,color .12s ease;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary-fill);color:#fff}
+.btn-primary:hover{background:var(--primary-soft);box-shadow:0 8px 22px -8px rgba(255,85,0,.55)}
+.btn-ghost{background:var(--card);color:var(--text);border-color:var(--border-2)}
+.btn-ghost:hover{background:var(--elev);color:#fff}
+
+/* Layered diagram */
+.layer-demo{max-width:400px;margin:8px auto 0}
+.layer-box{
+  border:1px solid var(--border-2);background:var(--card);color:var(--text-soft);
+  text-align:center;padding:12px 10px;border-radius:8px;font-size:14.5px;font-weight:500;
+}
+.layer-box .code{font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);display:block;margin-top:3px}
+.layer-flow{height:20px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.layer-flow i{display:block;width:2px;height:100%;background:linear-gradient(to bottom,var(--primary),#ffb98a)}
+.layer-flow i{animation:flowPulse 1.6s ease-in-out infinite}
+@keyframes flowPulse{0%,100%{opacity:.35}50%{opacity:1}}
+.layer-box.hl{border-color:var(--primary);color:#ffd9c2;background:var(--primary-dim)}
+.layer-box.hl .code{color:#ffb98a}
+.hero-side{display:grid;gap:0;animation:heroUp .7s .4s ease both}
+@media(min-width:920px){
+  .hero-inner{display:grid;grid-template-columns:1.35fr .85fr;gap:40px;align-items:center}
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.section{padding:72px 0 26px;position:relative;z-index:1}
+.sec-head{margin-bottom:36px;max-width:840px}
+.sec-num{
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);
+  display:flex;align-items:center;gap:10px;font-weight:600;
+}
+.sec-num::before{content:"";width:26px;height:2px;background:var(--primary-fill)}
+.sec-num .dim{color:var(--text-dim)}
+h2{
+  font-family:var(--font-display);font-size:clamp(28px,3.8vw,40px);
+  margin:10px 0 12px;line-height:1.15;text-wrap:balance;color:#fff;
+}
+.lead{color:var(--text-soft);font-size:19px;margin:0;line-height:1.7}
+.lead strong{color:#fff}
+h3.sectitle{font-family:var(--font-display);font-size:clamp(22px,2.6vw,28px);margin:34px 0 16px;color:#fff}
+
+/* "En simple" callout */
+.simple{
+  margin-top:20px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 22px;font-size:17.5px;color:var(--text-soft);
+}
+.simple b{
+  color:var(--primary);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;
+  font-size:13px;display:inline-block;margin-bottom:6px;
+}
+.simple p{margin:0;color:var(--text-soft)}
+.simple code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+
+/* Cards grid */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 20px 18px;box-shadow:var(--shadow-card);
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.card:hover{transform:translateY(-2px);border-color:var(--border-2);background:var(--card-2)}
+.card .tag{
+  font-family:var(--font-mono);font-size:12px;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;
+  display:block;margin-bottom:8px;
+}
+.card.cyan .tag{color:var(--primary)}
+.card h3{font-family:var(--font-display);font-size:19px;margin:0 0 8px;line-height:1.3;color:#fff}
+.card p{margin:0 0 10px;font-size:16px;color:var(--text-soft)}
+.card .mini{margin-top:8px;border-top:1px solid var(--border);padding-top:10px;font-size:15px;color:var(--text-dim)}
+.card .mini b{color:var(--blue)}
+.card code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+
+/* Callout info */
+.note{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 20px;font-size:16.5px;color:var(--text-soft);
+}
+.note b{color:var(--primary);font-weight:600}
+.note code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card)}
+table{width:100%;border-collapse:collapse;font-size:15.5px;min-width:640px}
+caption{text-align:left;padding:16px 18px 6px;font-family:var(--font-display);font-weight:600;font-size:17px;color:#fff}
+th{
+  text-align:left;padding:13px 16px;background:var(--bg-2);font-size:13px;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--text-soft);border-bottom:1px solid var(--border);
+  font-family:var(--font-mono);font-weight:600;white-space:nowrap;
+}
+td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text-soft)}
+tr:last-child td{border-bottom:none}
+td code{background:var(--bg-2);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+tr:nth-child(even) td{background:var(--bg-2)}
+
+/* Code blocks */
+.codeblock{
+  background:var(--bg-2);color:var(--text);border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--border);margin:18px 0;
+}
+.codeblock .cb-head{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);
+  font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);
+}
+.codeblock .cb-head .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.codeblock .cb-head .dot.r{background:#ff5f57}.codeblock .cb-head .dot.y{background:#febc2e}.codeblock .cb-head .dot.g{background:#28c840}
+.codeblock .cb-head .fn{margin-left:auto}
+.codeblock pre{margin:0;padding:18px;overflow-x:auto;font-family:var(--font-mono);font-size:14.5px;line-height:1.65;tab-size:4}
+.codeblock .c-key{color:#7fd4ff}
+.codeblock .c-str{color:#ffe08a}
+.codeblock .c-com{color:#8a99ab;font-style:italic}
+.codeblock .c-cls{color:#c9a7ff}
+
+/* Tabs */
+.tabs{margin:24px 0}
+.tab-list{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 16px;padding:0}
+.tab-list button{
+  font-family:var(--font-mono);font-size:13.5px;font-weight:600;
+  background:var(--card);border:1px solid var(--border-2);color:var(--text-soft);
+  padding:10px 15px;border-radius:999px;cursor:pointer;transition:all .12s ease;
+  touch-action:manipulation;
+}
+.tab-list button[aria-selected="true"]{background:var(--primary-fill);border-color:var(--primary-fill);color:#fff}
+.tab-list button:hover:not([aria-selected="true"]){border-color:var(--primary);color:var(--primary)}
+.tab-panel{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Accordion */
+details.acc{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  margin-bottom:10px;box-shadow:var(--shadow-card);overflow:hidden;
+}
+details.acc summary{
+  cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;
+  padding:16px 20px;font-family:var(--font-display);font-weight:600;font-size:18px;color:#fff;
+}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .acc-ic{width:32px;height:32px;flex:none;border-radius:8px;background:var(--primary-dim);display:grid;place-items:center;font-size:16px;color:var(--primary);font-weight:700}
+details.acc summary .arrow{margin-left:auto;transition:transform .2s ease;color:var(--primary);font-size:14px}
+details.acc[open] summary .arrow{transform:rotate(180deg)}
+details.acc .acc-body{padding:0 20px 18px 64px;color:var(--text-soft);font-size:16.5px}
+details.acc .acc-body p{margin:0 0 8px}
+details.acc .acc-body ul{margin:4px 0 8px;padding-left:18px}
+details.acc .acc-body li{margin-bottom:8px}
+details.acc .acc-body b{color:var(--blue)}
+
+/* Antipattern / solid rows */
+.row-pair{display:grid;gap:16px}
+@media(min-width:760px){.row-pair{grid-template-columns:1fr 1fr}}
+.bad,.good{border-radius:var(--radius);padding:16px 18px;font-size:16px;border:1px solid}
+.bad{background:var(--red-soft);border-color:#5b2b28;color:#ffc2be}
+.bad h4{margin:0 0 8px;font-size:14px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;letter-spacing:.05em}
+.good{background:var(--green-soft);border-color:#205a42;color:#bde9d7}
+.good h4{margin:0 0 8px;font-size:14px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;letter-spacing:.05em}
+
+/* SOLID cards */
+.solid-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column}
+.solid-card .solid-top{background:var(--bg-2);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border)}
+.solid-card .letter{width:44px;height:44px;flex:none;border-radius:10px;background:var(--primary-fill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:24px;color:#fff}
+.solid-card .solid-top h3{margin:0;font-family:var(--font-display);font-size:18px;color:#fff}
+.solid-card .solid-top span{display:block;font-size:13px;color:var(--text-dim)}
+.solid-card .solid-body{padding:16px 18px;font-size:16px;color:var(--text-soft);flex:1}
+.solid-card .solid-body p{margin:0 0 8px}
+.solid-card .solid-ex{padding:14px 18px;border-top:1px solid var(--border);background:var(--bg-2)}
+.solid-card .solid-ex code{font-family:var(--font-mono);font-size:13px;color:var(--amber);display:block;white-space:pre-wrap;line-height:1.5}
+.solid-card.alt .solid-top{background:var(--primary-dim)}
+.solid-card.alt .letter{background:#0e7490}
+
+/* Footer */
+footer{
+  position:relative;z-index:1;background:var(--bg-2);color:var(--text-dim);margin-top:64px;
+  border-top:1px solid var(--border);
+}
+.foot-inner{max-width:var(--maxw);margin:0 auto;padding:38px 20px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;position:relative}
+footer h4{font-family:var(--font-display);color:#fff;margin:0 0 10px;font-size:17px}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+footer a{color:var(--text-soft);text-decoration:none;font-size:15px}
+footer a:hover{color:var(--primary);text-decoration:underline}
+.foot-note{max-width:var(--maxw);margin:0 auto;padding:14px 20px 26px;position:relative;font-family:var(--font-mono);font-size:13px;color:var(--text-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* Back to top */
+#toTop{
+  position:fixed;right:18px;bottom:18px;z-index:120;width:48px;height:48px;border-radius:12px;
+  background:var(--primary-fill);color:#fff;border:none;cursor:pointer;
+  font-size:20px;box-shadow:0 8px 24px -8px rgba(0,0,0,.6);opacity:0;pointer-events:none;
+  transition:opacity .2s ease;touch-action:manipulation;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:var(--primary-soft)}
+
+/* Reveal on scroll */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+.grid.reveal > *{opacity:0;transform:translateY(18px)}
+.grid.reveal.in > *{animation:cardIn .5s ease forwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.grid.reveal.in > *:nth-child(1){animation-delay:.05s}
+.grid.reveal.in > *:nth-child(2){animation-delay:.12s}
+.grid.reveal.in > *:nth-child(3){animation-delay:.19s}
+.grid.reveal.in > *:nth-child(4){animation-delay:.26s}
+.grid.reveal.in > *:nth-child(5){animation-delay:.33s}
+.grid.reveal.in > *:nth-child(6){animation-delay:.4s}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  .reveal,.grid.reveal > *{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
+
+<aside class="sidebar" id="sidebar" aria-label="Menú lateral">
+  <a class="sidebar-brand" href="#top">
+    <span class="brand-badge" aria-hidden="true">SW</span>
+    <span>Arquitectura SW<small>Resumen · UNIBE 2026</small></span>
+  </a>
+  <nav aria-label="Unidades">
+    <ul>
+      <li><a href="#fundamentos"><span class="num">01</span> Fundamentos</a></li>
+      <li><a href="#persistencia"><span class="num">02</span> Persistencia</a></li>
+      <li><a href="#seguridad"><span class="num">03</span> Seguridad</a></li>
+      <li><a href="#estilos"><span class="num">04</span> Estilos</a></li>
+      <li><a href="#patrones"><span class="num">05</span> Patrones</a></li>
+      <li><a href="#frameworks"><span class="num">06</span> Frameworks</a></li>
+      <li><a href="#diseno"><span class="num">07</span> SOLID</a></li>
+      <li><a href="#proyecto"><span class="num">08</span> Proyecto</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-footer">Diseño y Arquitectura de Software<br>Ingeniería de Sistemas</div>
+</aside>
+<button class="burger" id="burger" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menú">
+  <svg class="ic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-inner">
+    <div>
+      <p class="eyebrow">Material de clase · Resumen</p>
+      <h1 id="hero-title">Diseño y <span class="accent">Arquitectura</span> de Software</h1>
+      <p class="lede">Las ideas esenciales de la materia en un solo lugar: calidad, UML, persistencia, seguridad, estilos, patrones, frameworks, SOLID y métricas.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>7</b><span>Unidades</span></div>
+        <div class="stat"><b>8</b><span>Estilos</span></div>
+        <div class="stat"><b>8</b><span>Patrones</span></div>
+        <div class="stat"><b>5</b><span>Principios SOLID</span></div>
+      </div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#fundamentos">Empezar el resumen</a>
+        <a class="btn btn-ghost" href="#diseno">Ir a SOLID</a>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="layer-demo" role="img" aria-label="Diagrama en capas de una aplicación: Cliente, Controlador, Servicio, Repositorio y Base de datos">
+        <div class="layer-box">Cliente · Frontend <span class="code">HTTP / JSON</span></div>
+        <div class="layer-flow" aria-hidden="true"><i></i></div>
+        <div class="layer-box hl">Controlador · API REST <span class="code">valida la petición</span></div>
+        <div class="layer-flow" aria-hidden="true"><i></i></div>
+        <div class="layer-box">Servicio · Negocio <span class="code">reglas del dominio</span></div>
+        <div class="layer-flow" aria-hidden="true"><i></i></div>
+        <div class="layer-box">Repositorio · Datos <span class="code">patrón Repository</span></div>
+        <div class="layer-flow" aria-hidden="true"><i></i></div>
+        <div class="layer-box">Base de Datos <span class="code">PostgreSQL / MySQL</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 FUNDAMENTOS ============ -->
+<section class="section" id="fundamentos" aria-labelledby="h-fund">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clase 2</span><span class="dim">· Unidad 01</span></p>
+      <h2 id="h-fund">Calidad del software y UML</h2>
+      <p class="lead">Un sistema no es bueno solo porque funciona: debe ser <strong>mantenible, escalable, disponible y rápido</strong>. Y para diseñarlo se usan los <strong>planos del software</strong>: los diagramas UML.</p>
+    </div>
+
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>La calidad funcional responde: "¿el programa hace lo que debe?". La calidad arquitectónica responde: "¿el programa se comporta bien en el mundo real?" — con muchos usuarios, muchos cambios y poco presupuesto.</p>
+    </div>
+
+    <h3 class="sectitle reveal">Atributos de calidad (no funcionales)</h3>
+    <div class="grid g4 reveal">
+      <div class="card">
+        <span class="tag">ISO/IEC 25010</span>
+        <h3>Mantenibilidad</h3>
+        <p>Qué tan fácil es modificar el sistema. Un sistema mantenible tiene <b>alta cohesión</b> y <b>bajo acoplamiento</b>.</p>
+        <div class="mini"><b>Señal:</b> cambiar una regla no rompe lo demás.</div>
+      </div>
+      <div class="card cyan">
+        <span class="tag">ISO/IEC 25010</span>
+        <h3>Escalabilidad</h3>
+        <p>Manejar más trabajo añadiendo recursos: más máquinas (<b>horizontal</b>) o más hardware en una sola (<b>vertical</b>).</p>
+        <div class="mini"><b>Señal:</b> más tráfico, mismo rendimiento.</div>
+      </div>
+      <div class="card cyan">
+        <span class="tag">ISO/IEC 25010</span>
+        <h3>Disponibilidad</h3>
+        <p>Porcentaje de tiempo que el sistema está operativo. "Cinco nueves" (99.999%) son apenas 5 minutos de caída al año.</p>
+        <div class="mini"><b>Señal:</b> réplicas y failover automático.</div>
+      </div>
+      <div class="card">
+        <span class="tag">ISO/IEC 25010</span>
+        <h3>Rendimiento</h3>
+        <p>Latencia (tiempo por petición) y throughput (peticiones por segundo) bajo carga normal o pico.</p>
+        <div class="mini"><b>Señal:</b> 45&nbsp;ms de respuesta, no 2&nbsp;s.</div>
+      </div>
+    </div>
+
+    <h3 class="sectitle reveal">Conceptos base</h3>
+    <div class="grid g3 reveal">
+      <div class="card">
+        <span class="tag">Concepto</span>
+        <h3>Abstracción</h3>
+        <p>Ocultar los detalles complejos tras una interfaz simple: interesa <em>qué hace</em>, no <em>cómo</em>.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Concepto</span>
+        <h3>Encapsulamiento</h3>
+        <p>Agrupar datos y comportamiento en una clase, restringiendo el acceso directo a sus campos.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Concepto</span>
+        <h3>Cohesión y acoplamiento</h3>
+        <p>Queremos <b>alta cohesión</b> (cada clase hace una cosa) y <b>bajo acoplamiento</b> (las clases dependen poco entre sí).</p>
+      </div>
+    </div>
+
+    <h3 class="sectitle reveal">UML y diagramas</h3>
+    <div class="tabs reveal">
+      <ul class="tab-list" role="tablist" aria-label="Diagramas UML">
+        <li><button role="tab" aria-selected="true" aria-controls="tab-estruc" id="tabbtn-estruc">Estructurales</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-comp" id="tabbtn-comp">Comportamiento</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-rel" id="tabbtn-rel">Relaciones de clases</button></li>
+      </ul>
+      <div role="tabpanel" id="tab-estruc" aria-labelledby="tabbtn-estruc" class="tab-panel">
+        <div class="grid g3">
+          <div class="card"><span class="tag">Estructural</span><h3>Diagrama de Clases</h3><p>Clases, atributos, métodos y sus relaciones.</p></div>
+          <div class="card"><span class="tag">Estructural</span><h3>Diagrama de Componentes</h3><p>Organización lógica en paquetes reutilizables.</p></div>
+          <div class="card"><span class="tag">Estructural</span><h3>Diagrama de Despliegue</h3><p>Topología física: servidores, contenedores y la red.</p></div>
+        </div>
+      </div>
+      <div role="tabpanel" id="tab-comp" aria-labelledby="tabbtn-comp" class="tab-panel" hidden>
+        <div class="grid g2">
+          <div class="card"><span class="tag">Comportamiento</span><h3>Casos de Uso</h3><p>Qué puede hacer cada actor. Ej: <em>Estudiante → Consultar calificaciones</em>.</p></div>
+          <div class="card"><span class="tag">Comportamiento</span><h3>Diagrama de Secuencia</h3><p>Mensajes entre objetos ordenados en el tiempo.</p></div>
+        </div>
+      </div>
+      <div role="tabpanel" id="tab-rel" aria-labelledby="tabbtn-rel" class="tab-panel" hidden>
+        <div class="grid g3">
+          <div class="card"><span class="tag">Relación</span><h3>Asociación</h3><p>Conexión estructural simple entre clases (un Profesor dicta un Curso).</p></div>
+          <div class="card"><span class="tag">Relación</span><h3>Agregación · rombo vacío</h3><p>Relación "todo-parte" <b>débil</b>: la parte existe sin el todo.</p></div>
+          <div class="card"><span class="tag">Relación</span><h3>Composición · rombo relleno</h3><p>Relación "todo-parte" <b>fuerte</b>: si muere el todo, muere la parte.</p></div>
+        </div>
+        <div class="simple" style="margin-top:16px">
+          <b>En simple</b>
+          <p>Agregación = "una universidad tiene profesores" (el profesor sigue sin la universidad). Composición = "un libro tiene páginas" (sin libro no hay páginas).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2 reveal">
+      <div class="card">
+        <span class="tag">Casos de uso</span>
+        <h3>«include» — obligatorio</h3>
+        <p>El caso base siempre ejecuta al otro. <b>Consultar calificaciones</b> siempre requiere <b>Iniciar sesión</b>.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Casos de uso</span>
+        <h3>«extend» — opcional</h3>
+        <p>El caso base <em>puede</em> incluir al otro de forma condicional. <b>Cargar notas</b> puede extender con <b>Modificar nota</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 PERSISTENCIA ============ -->
+<section class="section" id="persistencia" aria-labelledby="h-per">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clase 3</span><span class="dim">· Unidad 02</span></p>
+      <h2 id="h-per">Persistencia y acceso a datos</h2>
+      <p class="lead">La persistencia hace que los datos <strong>sobrevivan</strong> al reinicio. La pregunta es <em>cómo</em> guardarlos sin amarrar el negocio a una base de datos específica.</p>
+    </div>
+
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>Persistencia = datos que sobreviven al reinicio. Si solo viven en la memoria RAM, se pierden al apagar el programa. Las bases de datos relacionales los guardan en <em>tablas</em> garantizando integridad con <b>ACID</b>.</p>
+    </div>
+
+    <h3 class="sectitle reveal">Conceptos esenciales</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">RDBMS</span><h3>Relacionales</h3><p>Tablas + ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad). PostgreSQL, MySQL.</p></div>
+      <div class="card cyan"><span class="tag">NoSQL</span><h3>Documentales / KV</h3><p>Gran volumen no estructurado o de rápido crecimiento. MongoDB, Redis.</p></div>
+      <div class="card"><span class="tag">Modelo</span><h3>Entidad-Relación</h3><p>Clave primaria (PK) identifica; clave foránea (FK) relaciona (1:N).</p></div>
+      <div class="card cyan"><span class="tag">Estrategia</span><h3>Connection Pooling</h3><p>Abrir conexiones es caro: se reutilizan conexiones ya abiertas (HikariCP).</p></div>
+      <div class="card"><span class="tag">Estrategia</span><h3>Réplicas</h3><p>Maestro escribe, esclavos leen. Escala las lecturas pesadas.</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">DAO vs Repository</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <caption>DAO vs Repository</caption>
+        <thead><tr><th scope="col">Criterio</th><th scope="col">DAO</th><th scope="col">Repository</th></tr></thead>
+        <tbody>
+          <tr><td>Centrado en</td><td>Tablas físicas y SQL</td><td>Dominio y objetos de negocio</td></tr>
+          <tr><td>Cardinalidad</td><td>1 DAO por tabla</td><td>1 Repository por agregado</td></tr>
+          <tr><td>Abstracción</td><td>Baja (próximo a la BD)</td><td>Alta (próximo al dominio)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="simple reveal" style="margin-top:18px">
+      <b>En simple</b>
+      <p>Repository = el mozo del restaurante. Tu lógica pide "dame el usuario con id 7" sin saber si viene de PostgreSQL o MySQL. Si cambias de base de datos, solo cambia el mozo.</p>
+    </div>
+
+    <h3 class="sectitle reveal">ORM, JPA y Hibernate</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Problema</span><h3>Desfase de impedancia</h3><p>Los objetos (clases, herencia) no encajan con las tablas (columnas, FKs). El ORM es el puente.</p></div>
+      <div class="card cyan"><span class="tag">Estándar</span><h3>JPA</h3><p>Define el contrato: anotaciones <code>@Entity</code>, <code>@Id</code>, <code>@Table</code>. No hace el trabajo real.</p></div>
+      <div class="card"><span class="tag">Motor</span><h3>Hibernate</h3><p>Lee las anotaciones JPA y genera el SQL nativo. Es el proveedor más popular.</p></div>
+    </div>
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">Usuario.java · entidad JPA mapeada a la tabla "usuarios"</span></div>
+<pre><code><span class="c-cls">@Entity</span>
+<span class="c-cls">@Table</span>(name = "usuarios")
+<span class="c-key">public class</span> Usuario {
+    <span class="c-cls">@Id</span> <span class="c-cls">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+    <span class="c-key">private</span> Long id;
+
+    <span class="c-cls">@Column</span>(unique = true, nullable = false)
+    <span class="c-key">private</span> String email;
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 SEGURIDAD ============ -->
+<section class="section" id="seguridad" aria-labelledby="h-seg">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clase 4</span><span class="dim">· Unidad 03</span></p>
+      <h2 id="h-seg">Errores, resiliencia y seguridad</h2>
+      <p class="lead">El software profesional asume que las cosas <strong>van a fallar</strong> y que alguien <strong>querrá atacarlo</strong>. Se diseña para caer con elegancia, registrarlo todo y proteger el acceso.</p>
+    </div>
+
+    <h3 class="sectitle reveal">Errores y logging</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Excepciones</span><h3>Checked</h3><p>Fallos recuperables externos. El compilador <b>obliga</b> a capturarlas.</p></div>
+      <div class="card cyan"><span class="tag">Excepciones</span><h3>Unchecked</h3><p>Errores de lógica interna. Ocurren en ejecución sin captura forzada.</p></div>
+      <div class="card"><span class="tag">Logging</span><h3>Niveles de log</h3><p>DEBUG → INFO → WARN → ERROR. El diario de vida de la app.</p></div>
+    </div>
+    <div class="note reveal">
+      <b>Buenas prácticas:</b> centralizar errores con manejadores globales (por ejemplo <code>@ControllerAdvice</code> en Spring Boot) en vez de plagar el código de <code>try-catch</code>.
+    </div>
+
+    <h3 class="sectitle reveal">Tolerancia a fallos</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Patrón</span><h3>Circuit Breaker</h3><p>Como un disyuntor: si el servicio falla mucho, <b>bloquea el tráfico</b> para no colapsar al cliente.</p></div>
+      <div class="card cyan"><span class="tag">Patrón</span><h3>Retry</h3><p>Reintenta peticiones fallidas asumiendo que el error es temporal.</p></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Fallback</h3><p>Respuesta degradada pero útil (ej: caché) en lugar de un error.</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">Autenticación, autorización y JWT</h3>
+    <div class="grid g2 reveal">
+      <div class="card"><span class="tag">Identidad</span><h3>Autenticación · ¿Quién eres?</h3><p>Validar credenciales y emitir un token firmado.</p></div>
+      <div class="card cyan"><span class="tag">Permisos</span><h3>Autorización · ¿Qué puedes hacer?</h3><p>Leer el token y comprobar el rol (<code>ROLE_ADMIN</code>).</p></div>
+    </div>
+    <div class="tabs reveal">
+      <ul class="tab-list" role="tablist" aria-label="Estructura de un JWT">
+        <li><button role="tab" aria-selected="true" aria-controls="tab-jh" id="tabbtn-jh">Header</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-jp" id="tabbtn-jp">Payload</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-js" id="tabbtn-js">Firma</button></li>
+      </ul>
+      <div role="tabpanel" id="tab-jh" aria-labelledby="tabbtn-jh" class="tab-panel">
+        <div class="card"><span class="tag">JWT · Parte 1</span><h3>Header</h3><p>Algoritmo y tipo de token. Ej: <code>{"alg":"HS256","typ":"JWT"}</code>.</p></div>
+      </div>
+      <div role="tabpanel" id="tab-jp" aria-labelledby="tabbtn-jp" class="tab-panel" hidden>
+        <div class="card"><span class="tag">JWT · Parte 2</span><h3>Payload</h3><p>Los "claims": datos del usuario y roles. Ej: <code>{"sub":"123","roles":["ROLE_ADMIN"]}</code>.</p></div>
+      </div>
+      <div role="tabpanel" id="tab-js" aria-labelledby="tabbtn-js" class="tab-panel" hidden>
+        <div class="card"><span class="tag">JWT · Parte 3</span><h3>Firma</h3><p>Valida que nadie alteró el token. Si cambias un carácter, la firma no coincide y el servidor lo rechaza.</p></div>
+      </div>
+    </div>
+
+    <h3 class="sectitle reveal">OWASP Top 10</h3>
+    <div class="grid g4 reveal">
+      <div class="card"><span class="tag">A01</span><h3>Control de acceso roto</h3><p>Acceder a datos ajenos cambiando un id en la URL. Mitigar: validar en servidor que el <code>sub</code> del JWT sea el dueño.</p></div>
+      <div class="card cyan"><span class="tag">A02</span><h3>Fallos criptográficos</h3><p>Datos sensibles sin cifrar o con algoritmos débiles.</p></div>
+      <div class="card"><span class="tag">A03</span><h3>Inyección</h3><p>SQLi / XSS: código malicioso dentro de entradas del usuario.</p></div>
+      <div class="card cyan"><span class="tag">A04</span><h3>Diseño inseguro</h3><p>Falta de controles de seguridad desde el diseño.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 ESTILOS ============ -->
+<section class="section" id="estilos" aria-labelledby="h-est">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clases 5 y 6.3</span><span class="dim">· Unidad 04</span></p>
+      <h2 id="h-est">Estilos arquitectónicos</h2>
+      <p class="lead">El <strong>estilo</strong> es la topología global del sistema. El <strong>patrón</strong> es la solución táctica de un componente. Un estilo puede usar muchos patrones.</p>
+    </div>
+
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>Estilo = "el sistema es un edificio de apartamentos" (macro). Patrón = "dentro de cada apartamento, los muebles van así" (micro).</p>
+    </div>
+
+    <div class="tabs reveal">
+      <ul class="tab-list" role="tablist" aria-label="Los 8 estilos arquitectónicos">
+        <li><button role="tab" aria-selected="true" aria-controls="tab-mon" id="tabbtn-mon">Monolito</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-monmod" id="tabbtn-monmod">Monolito modular</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-cs" id="tabbtn-cs">Cliente-servidor</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-ms" id="tabbtn-ms">Microservicios</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-soa" id="tabbtn-soa">SOA</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-sv" id="tabbtn-sv">Serverless</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-ev" id="tabbtn-ev">Event-driven</button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="tab-p2p" id="tabbtn-p2p">Peer-to-peer</button></li>
+      </ul>
+
+      <div role="tabpanel" id="tab-mon" aria-labelledby="tabbtn-mon" class="tab-panel">
+        <div class="card"><span class="tag">Estilo</span><h3>Monolito</h3><p>Todo en una sola unidad desplegable (.jar / .war). Ideal para arrancar.</p>
+        <div class="mini"><b>Pro:</b> simple, un solo deploy. <b>Contra:</b> punto único de fallo, escala todo o nada.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-monmod" aria-labelledby="tabbtn-monmod" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Monolito modular</h3><p>Un solo ejecutable con módulos lógicos estrictos.</p>
+        <div class="mini"><b>Pro:</b> despliegue simple + orden. <b>Contra:</b> escalado global.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-cs" aria-labelledby="tabbtn-cs" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Cliente-servidor</h3><p>Clientes piden recursos y un servidor central atiende por red (HTTP/REST).</p>
+        <div class="mini"><b>Pro:</b> clásico. <b>Contra:</b> servidor central = cuello de botella.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-ms" aria-labelledby="tabbtn-ms" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Microservicios</h3><p>Cada capacidad de negocio es un proceso independiente que habla por red.</p>
+        <div class="mini"><b>Pro:</b> escala por servicio, aisla fallos. <b>Contra:</b> complejidad y latencia.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-soa" aria-labelledby="tabbtn-soa" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>SOA</h3><p>Servicios integrados por un Bus central (ESB) con SOAP/XML.</p>
+        <div class="mini"><b>Pro:</b> integra sistemas heredados. <b>Contra:</b> ESB = punto de fallo.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-sv" aria-labelledby="tabbtn-sv" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Serverless (FaaS)</h3><p>Funciones efímeras lanzadas por eventos; la nube escala sola.</p>
+        <div class="mini"><b>Pro:</b> escala automática. <b>Contra:</b> cold starts.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-ev" aria-labelledby="tabbtn-ev" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Event-driven</h3><p>Componentes emiten y consumen eventos asíncronos por colas (Kafka, RabbitMQ).</p>
+        <div class="mini"><b>Pro:</b> desacoplamiento total. <b>Contra:</b> difícil de depurar.</div></div>
+      </div>
+      <div role="tabpanel" id="tab-p2p" aria-labelledby="tabbtn-p2p" class="tab-panel" hidden>
+        <div class="card"><span class="tag">Estilo</span><h3>Peer-to-peer</h3><p>Red descentralizada: cada nodo es cliente y servidor a la vez.</p>
+        <div class="mini"><b>Pro:</b> sin servidor central. <b>Contra:</b> complejidad muy alta.</div></div>
+      </div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <caption>Comparativa rápida de estilos</caption>
+        <thead><tr><th scope="col">Estilo</th><th scope="col">Acoplamiento</th><th scope="col">Escalabilidad</th><th scope="col">Complejidad</th><th scope="col">Caso recomendado</th></tr></thead>
+        <tbody>
+          <tr><td>Monolito</td><td>Alto</td><td>Baja</td><td>Baja</td><td>MVP y apps pequeñas</td></tr>
+          <tr><td>Monolito modular</td><td>Bajo/medio</td><td>Baja</td><td>Moderada</td><td>Sistemas medianos</td></tr>
+          <tr><td>Microservicios</td><td>Bajo</td><td>Alta</td><td>Alta</td><td>Plataformas grandes, muchos equipos</td></tr>
+          <tr><td>Serverless</td><td>Bajo</td><td>Excelente</td><td>Moderada</td><td>APIs esporádicas, crons</td></tr>
+          <tr><td>SOA</td><td>Medio (ESB)</td><td>Moderada</td><td>Muy alta</td><td>Integración corporativa</td></tr>
+          <tr><td>Event-driven</td><td>Muy bajo</td><td>Alta</td><td>Alta</td><td>Tiempo real, flujos asíncronos</td></tr>
+          <tr><td>Cliente-servidor</td><td>Alto/medio</td><td>Moderada</td><td>Baja</td><td>Apps web estándar</td></tr>
+          <tr><td>Peer-to-peer</td><td>Nulo</td><td>Excelente</td><td>Muy alta</td><td>Redes de archivos, blockchain</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row-pair reveal">
+      <div class="bad"><h4>SOA</h4><p>Grano grueso, ESB central, SOAP/XML pesado, base de datos compartida.</p></div>
+      <div class="good"><h4>Microservicios</h4><p>Grano fino, endpoints ligeros, REST/JSON, base de datos por servicio.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 PATRONES ============ -->
+<section class="section" id="patrones" aria-labelledby="h-pat">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clases 6 y 6.1</span><span class="dim">· Unidad 05</span></p>
+      <h2 id="h-pat">Patrones arquitectónicos</h2>
+      <p class="lead">Soluciones probadas y repetibles para organizar el código. Nacieron para acabar con el <strong>código espagueti</strong>.</p>
+    </div>
+
+    <div class="grid g4 reveal">
+      <div class="card"><span class="tag">Patrón</span><h3>En capas</h3><p>Presentación → Negocio → Datos.</p><div class="mini"><b>Cuándo:</b> sistemas tradicionales.</div></div>
+      <div class="card cyan"><span class="tag">Patrón</span><h3>Clean</h3><p>Reglas de negocio al centro, frameworks afuera.</p><div class="mini"><b>Cuándo:</b> sistemas empresariales.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Hexagonal</h3><p>Puertos y adaptadores. El negocio no conoce la tecnología.</p><div class="mini"><b>Cuándo:</b> APIs y sistemas que cambian de tecnología.</div></div>
+      <div class="card cyan"><span class="tag">Patrón</span><h3>Onion</h3><p>Dominio en el núcleo, dependencias hacia dentro.</p><div class="mini"><b>Cuándo:</b> apps basadas en dominio.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>MVC</h3><p>Modelo (datos) / Vista (UI) / Controlador (entrada).</p><div class="mini"><b>Cuándo:</b> CRUD rápido.</div></div>
+      <div class="card cyan"><span class="tag">Patrón</span><h3>CQRS</h3><p>Lecturas (queries) separadas de escrituras (commands).</p><div class="mini"><b>Cuándo:</b> mucha lectura vs escritura.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Event-driven</h3><p>Comunicación asíncrona por eventos y colas.</p><div class="mini"><b>Cuándo:</b> microservicios desacoplados.</div></div>
+      <div class="card cyan"><span class="tag">Patrón</span><h3>Microkernel</h3><p>Core mínimo + plugins (IDEs, editores).</p><div class="mini"><b>Cuándo:</b> apps extensibles.</div></div>
+    </div>
+
+    <h3 class="sectitle reveal">Arquitectura Hexagonal (Ports &amp; Adapters)</h3>
+    <p style="color:var(--text-soft);font-size:17px;max-width:820px">De Alistair Cockburn (2005). El dominio es el centro; la tecnología se conecta por <b>puertos</b> (interfaces) y <b>adaptadores</b> (implementaciones).</p>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Núcleo</span><h3>Dominio</h3><p>Entidades y reglas de negocio en lenguaje puro, sin imports de Spring/JPA.</p></div>
+      <div class="card cyan"><span class="tag">Contrato</span><h3>Puertos</h3><p>Interfaces de entrada (lo que ofrece) y salida (lo que necesita, ej: guardar).</p></div>
+      <div class="card"><span class="tag">Implementación</span><h3>Adaptadores</h3><p>REST Controller y JPA Repository traducen el mundo externo al dominio.</p></div>
+    </div>
+    <div class="note reveal">
+      <b>Regla de oro:</b> las dependencias fluyen <em>siempre hacia el centro</em>. Adaptadores → Puertos → Dominio.
+    </div>
+
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">Libro.java · dominio puro, sin anotaciones de infraestructura</span></div>
+<pre><code><span class="c-key">package</span> domain.model;
+
+<span class="c-key">public class</span> Libro {
+    <span class="c-key">private</span> Long id;
+    <span class="c-key">private</span> String titulo;
+    <span class="c-key">private boolean</span> disponible;
+
+    <span class="c-key">public void</span> prestar() {
+        <span class="c-key">if</span> (!disponible) {
+            <span class="c-key">throw new</span> IllegalStateException("El libro no está disponible");
+        }
+        disponible = <span class="c-key">false</span>;
+    }
+}</code></pre>
+    </div>
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">PrestarLibroUseCase.java · depende de la interfaz, no de PostgreSQL</span></div>
+<pre><code><span class="c-key">public class</span> PrestarLibroUseCase {
+    <span class="c-key">private final</span> LibroRepository libroRepository;
+
+    <span class="c-key">public</span> PrestarLibroUseCase(LibroRepository repo) {
+        <span class="c-key">this</span>.libroRepository = repo;
+    }
+
+    <span class="c-key">public void</span> ejecutar(Long libroId) {
+        Libro libro = libroRepository.buscarPorId(libroId);
+        libro.prestar();               <span class="c-com">// lógica de negocio</span>
+        libroRepository.guardar(libro); <span class="c-com">// la infraestructura la implementa el adaptador</span>
+    }
+}</code></pre>
+    </div>
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>Hexagonal = el negocio no sabe de "plomería". Cambiar de Spring a Quarkus o de PostgreSQL a MongoDB solo toca los <em>adaptadores</em>, nunca el dominio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 FRAMEWORKS ============ -->
+<section class="section" id="frameworks" aria-labelledby="h-fw">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clases 6.2 · 6.4–6.12</span><span class="dim">· Unidad 06</span></p>
+      <h2 id="h-fw">Frameworks y herramientas</h2>
+      <p class="lead">Un framework da estructura, ORM y servidor HTTP listos. La clave es <strong>elegir con criterio</strong>, no por moda.</p>
+    </div>
+
+    <div class="grid g2 reveal">
+      <div class="card"><span class="tag">Tipos</span><h3>Opinados</h3><p>Imponen estructura de carpetas e inyección de dependencias: Spring Boot, NestJS, Laravel.</p></div>
+      <div class="card cyan"><span class="tag">Tipos</span><h3>No opinados (micro)</h3><p>Libertad total, tú creas la estructura: Express, Flask, Gin.</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">Backend en un vistazo</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <caption>Frameworks backend</caption>
+        <thead><tr><th scope="col">Framework</th><th scope="col">Lenguaje</th><th scope="col">Tipo</th><th scope="col">Time-to-market</th><th scope="col">Rendimiento</th></tr></thead>
+        <tbody>
+          <tr><td>Spring Boot</td><td>Java</td><td>Opinado</td><td>Bajo-medio</td><td>Alto</td></tr>
+          <tr><td>Django</td><td>Python</td><td>Baterías incluidas</td><td>Excelente</td><td>Bajo-medio</td></tr>
+          <tr><td>Flask / FastAPI</td><td>Python</td><td>Minimalista</td><td>Alto</td><td>Medio-alto</td></tr>
+          <tr><td>NestJS</td><td>TypeScript</td><td>Opinado</td><td>Medio</td><td>Medio-alto</td></tr>
+          <tr><td>Laravel</td><td>PHP</td><td>Baterías incluidas</td><td>Excelente</td><td>Bajo-medio</td></tr>
+          <tr><td>Gin (Go) / Axum (Rust)</td><td>Go / Rust</td><td>Minimalista</td><td>Medio</td><td>Excelente</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sectitle reveal">Frontend y mobile</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">SPA</span><h3>Single Page App</h3><p>Un HTML + JS que renderiza todo en el navegador. Fluido, pero penaliza el SEO.</p></div>
+      <div class="card cyan"><span class="tag">Meta-frameworks</span><h3>SSR / SSG (Next, Nuxt)</h3><p>HTML renderizado en servidor + hidratación. Mejor SEO.</p></div>
+      <div class="card"><span class="tag">Astro</span><h3>Islas de interactividad</h3><p>HTML estático por defecto; solo las zonas dinámicas cargan JS.</p></div>
+      <div class="card"><span class="tag">Framework</span><h3>Angular</h3><p>Completo y opinado: enrutado, HTTP, DI nativos.</p></div>
+      <div class="card cyan"><span class="tag">Librería</span><h3>React</h3><p>Librería flexible de componentes; el resto lo eliges tú.</p></div>
+      <div class="card"><span class="tag">Mobile</span><h3>Flutter vs React Native</h3><p>Flutter dibuja en canvas propio; React Native usa vistas nativas mapeadas.</p></div>
+    </div>
+
+    <div class="grid g2 reveal">
+      <div class="card">
+        <span class="tag">Persistencia</span><h3>ORM / ODM / SQL Mapper</h3>
+        <p><b>ORM</b> abstrae el SQL (Hibernate, Prisma). <b>ODM</b> mapea documentos NoSQL (Mongoose). <b>SQL Mapper</b> deja el SQL en tus manos (MyBatis).</p>
+        <div class="mini">Patrones: <b>Active Record</b> (el objeto se guarda solo, Django) vs <b>Data Mapper</b> (un repositorio guarda, Hibernate).</div>
+      </div>
+      <div class="card cyan">
+        <span class="tag">Calidad</span><h3>Testing · la pirámide</h3>
+        <p><b>Unitarias</b> (JUnit, Jest) — base grande y rápida. <b>Integración</b> (Mockito). <b>E2E</b> (Playwright, Cypress) — pocas y caras.</p>
+        <div class="mini">Regla: muchas unitarias, pocas E2E.</div>
+      </div>
+      <div class="card">
+        <span class="tag">Operaciones</span><h3>DevOps</h3>
+        <p><b>Contenedores</b>: Docker. <b>Orquestación</b>: Kubernetes. <b>CI/CD</b>: GitHub Actions. <b>IaC</b>: Terraform. <b>Config</b>: Ansible.</p>
+        <div class="mini">GitOps (ArgoCD): el repo Git es la fuente de verdad del clúster.</div>
+      </div>
+      <div class="card cyan">
+        <span class="tag">Seguridad</span><h3>Auth moderna</h3>
+        <p><b>OAuth2</b> = autorización (scopes). <b>OpenID Connect</b> = autenticación (ID tokens). <b>Keycloak</b> = IAM central con SSO.</p>
+        <div class="mini">Spring Security filtra con <code>hasRole('ADMIN')</code>.</div>
+      </div>
+    </div>
+
+    <h3 class="sectitle reveal">Cómo elegir un framework</h3>
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">decisión.txt · el flujo mental del arquitecto</span></div>
+<pre><code>¿Proyecto pequeño o microservicio básico?
+├─ SÍ  →  FastAPI / Flask
+└─ NO  →  ¿Equipo grande y estructura estricta?
+          ├─ SÍ  →  Spring Boot / NestJS / ASP.NET
+          └─ NO  →  ¿Time-to-market crítico?
+                    ├─ SÍ  →  Laravel / Django
+                    └─ NO  →  Go (Gin) / Rust (Axum)</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 SOLID Y CALIDAD ============ -->
+<section class="section" id="diseno" aria-labelledby="h-dis">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Clase 7</span><span class="dim">· Unidad 07</span></p>
+      <h2 id="h-dis">Diseño, SOLID y calidad</h2>
+      <p class="lead">La <strong>arquitectura</strong> son las decisiones globales difíciles de cambiar. El <strong>diseño</strong> es el detalle interno de cada módulo.</p>
+    </div>
+
+    <div class="grid g2 reveal">
+      <div class="card"><span class="tag">Nivel</span><h3>Alto nivel (HLD)</h3><p>Estructura general: módulos, base de datos, APIs. Entregables: diagramas C4, diagramas de red.</p></div>
+      <div class="card cyan"><span class="tag">Nivel</span><h3>Bajo nivel (LLD)</h3><p>Detalle técnico: clases, métodos, patrones. Entregables: diagramas de clase UML.</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">Los 5 principios SOLID</h3>
+    <div class="grid g2 reveal" style="gap:16px">
+      <div class="solid-card">
+        <div class="solid-top"><div class="letter">S</div><div><h3>Responsabilidad Única</h3><span>Una sola razón para cambiar</span></div></div>
+        <div class="solid-body"><p>Cada clase debe tener <b>una sola razón para cambiar</b>. Una clase no debe guardar en BD, mandar emails y cobrar pagos a la vez.</p></div>
+        <div class="solid-ex"><code>// UsuarioService hacía todo
+// UsuarioRepository, NotificadorEmail, ...</code></div>
+      </div>
+      <div class="solid-card">
+        <div class="solid-top"><div class="letter">O</div><div><h3>Abierto / Cerrado</h3><span>Extender sin modificar</span></div></div>
+        <div class="solid-body"><p>Abierto a <b>extensión</b>, cerrado a <b>modificación</b>: añadir funciones sin tocar el código existente (polimorfismo).</p></div>
+        <div class="solid-ex"><code>// ReportePDF y ReporteExcel extienden
+// ReporteFormato sin modificar el generador</code></div>
+      </div>
+      <div class="solid-card">
+        <div class="solid-top"><div class="letter">L</div><div><h3>Sustitución de Liskov</h3><span>Las subclases no rompen</span></div></div>
+        <div class="solid-body"><p>Las subclases deben poder reemplazar a su clase base <b>sin romper el sistema</b>.</p></div>
+        <div class="solid-ex"><code>// un Avestruz que "vuela" y lanza
+// excepción rompe el polimorfismo</code></div>
+      </div>
+      <div class="solid-card">
+        <div class="solid-top"><div class="letter">I</div><div><h3>Segregación de Interfaces</h3><span>Interfaces pequeñas</span></div></div>
+        <div class="solid-body"><p>Los clientes no deben depender de interfaces que <b>no usan</b>.</p></div>
+        <div class="solid-ex"><code>// Impresora no debería implementar
+// enviarFax() de una interfaz "gorda"</code></div>
+      </div>
+      <div class="solid-card">
+        <div class="solid-top"><div class="letter">D</div><div><h3>Inversión de Dependencias</h3><span>Depender de abstracciones</span></div></div>
+        <div class="solid-body"><p>Los módulos de alto nivel no dependen de los de bajo nivel; <b>ambos dependen de abstracciones</b>.</p></div>
+        <div class="solid-ex"><code>// GestorPedido depende de interface
+// Database, no de MySQLConnection</code></div>
+      </div>
+      <div class="solid-card alt">
+        <div class="solid-top"><div class="letter">!</div><div><h3>Heurísticas</h3><span>DRY · KISS · YAGNI</span></div></div>
+        <div class="solid-body"><p><b>DRY</b>: no repitas lógica. <b>KISS</b>: mantén lo simple. <b>YAGNI</b>: no programes lo que "quizá" hará falta. Y programa a interfaces, no a implementaciones.</p></div>
+        <div class="solid-ex"><code>// YAGNI: 3 interfaces + factory para una
+// pasarela que el cliente nunca cambiará</code></div>
+      </div>
+    </div>
+
+    <div class="row-pair reveal">
+      <div class="bad"><h4>Antipatrón: God Object</h4><p>Una clase de 12,000 líneas que hace SQL, emails y pagos. Viola SRP; se refactoriza separando responsabilidades.</p></div>
+      <div class="good"><h4>Antipatrones a evitar</h4><p><b>Big Ball of Mud</b> (sin arquitectura), <b>Spaghetti</b> (todo enredado), <b>Golden Hammer</b> (una herramienta para todo), <b>Lava Flow</b> (código muerto), <b>Copy &amp; Paste</b> (bugs replicados).</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">Métricas y calidad (ISO 25010)</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <caption>Atributos y técnicas de mejora</caption>
+        <thead><tr><th scope="col">Atributo</th><th scope="col">Técnicas clave</th><th scope="col">Métricas</th></tr></thead>
+        <tbody>
+          <tr><td>Rendimiento</td><td>Redis cache, índices SQL</td><td>Latencia (ms), throughput (req/s)</td></tr>
+          <tr><td>Escalabilidad</td><td>Load balancers, microservicios</td><td>Crecimiento horizontal / vertical</td></tr>
+          <tr><td>Disponibilidad</td><td>Failover, réplicas</td><td>Uptime %, MTBF, MTTR</td></tr>
+          <tr><td>Mantenibilidad</td><td>SOLID, clean code, tests</td><td>Índice de mantenibilidad</td></tr>
+          <tr><td>Seguridad</td><td>JWT, OAuth2, hash con sal</td><td>OWASP, auditorías</td></tr>
+          <tr><td>Usabilidad</td><td>Estándares UX</td><td>Pruebas con usuarios</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">
+      <b>Métricas clave:</b> <b>Complejidad ciclomática</b> (McCabe) = caminos independientes del código (M &gt; 20 → refactoriza). <b>MTBF</b> = tiempo medio entre fallos (alto = mejor). <b>MTTR</b> = tiempo medio de reparación (bajo = mejor). <b>SonarQube</b> = calidad gate antes del merge.
+    </div>
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>Todo diseño es una <b>balanza</b> (trade-off): más seguridad cuesta rendimiento, más redundancia cuesta dinero, más interfaces cuesta simplicidad. El arquitecto elige el equilibrio según el negocio.</p>
+    </div>
+
+    <details class="acc reveal">
+      <summary><span class="acc-ic">i</span> Casos reales: lo que hicieron las empresas<span class="arrow">▼</span></summary>
+      <div class="acc-body">
+        <ul>
+          <li><b>Netflix</b> — microservicios + Chaos Monkey: tiran servidores a propósito para probar resiliencia.</li>
+          <li><b>Amazon</b> — de monolito a microservicios con base de datos por servicio.</li>
+          <li><b>Spotify</b> — micro-frontends por squads (playlists, search, player).</li>
+          <li><b>Bancos</b> — consistencia ACID y cifrado no negociables.</li>
+          <li><b>Moodle</b> — LAMP monolítica escalada con réplicas de lectura + Nginx.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 08 PROYECTO VIAJECHECK ============ -->
+<section class="section" id="proyecto" aria-labelledby="h-pro">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="sec-num"><span>Proyecto</span><span class="dim">· ViajeCheck</span></p>
+      <h2 id="h-pro">ViajeCheck: la teoría en un proyecto real</h2>
+      <p class="lead">Sistema web para agencias de viajes. Un <strong>backend en .NET 8</strong> con Clean Architecture y CQRS, y un <strong>frontend en Angular 16</strong>. Aquí se ven aplicados los conceptos de la materia.</p>
+    </div>
+
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>ViajeCheck no inventa nada nuevo: es la teoría del curso puesta a trabajar. En cada capa y en cada archivo aparece un concepto que ya estudiamos — arquitectura limpia, CQRS, SOLID, Repository, JWT, testing y DevOps.</p>
+    </div>
+
+    <h3 class="sectitle reveal">La arquitectura en la práctica</h3>
+    <p style="color:var(--text-soft);font-size:17px;max-width:840px">El backend replica casi exactamente la arquitectura hexagonal/clean de la Unidad 05. Cada carpeta del proyecto es una capa.</p>
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">ViajeCheck.Backend · Clean Architecture real</span></div>
+<pre><code>ViajeCheck.sln
+├─ ViajeCheck.Domain          <span class="c-com">// núcleo: entidades, enums, value objects, interfaces</span>
+│   ├─ Entities               <span class="c-com">// Travel, Reservation, Client, User...</span>
+│   ├─ ValueObjects           <span class="c-com">// Email, Address, PhoneNumber, Document</span>
+│   └─ Interfaces             <span class="c-com">// IUserRepository, ITravelRepository, IUnitOfWork</span>
+├─ ViajeCheck.Application     <span class="c-com">// comandos, consultas y reglas (CQRS + MediatR)</span>
+│   └─ Features
+│       ├─ Auth / Travels / Reservations / Clients
+│       │   ├─ Commands  + Handlers
+│       │   └─ Queries   + Handlers
+│       └─ Validators           <span class="c-com">// FluentValidation</span>
+├─ ViajeCheck.Infrastructure  <span class="c-com">// EF Core, repositorios, AuthService</span>
+│   ├─ Data / Configurations / Migrations
+│   └─ Repositories
+└─ ViajeCheck.WebAPI          <span class="c-com">// controllers, middleware, Program.cs</span>
+    ├─ Controllers
+    └─ Middleware / ExceptionMiddleware</code></pre>
+    </div>
+    <div class="simple reveal">
+      <b>En simple</b>
+      <p>¿Recuerdas la regla de oro de la hexagonal? <em>"las dependencias fluyen siempre hacia el centro"</em>. En ViajeCheck: <b>Domain</b> no conoce a nadie, <b>Application</b> usa Domain, <b>Infrastructure</b> implementa las interfaces del Domain y <b>WebAPI</b> solo orquesta. Exactamente el patrón de la Unidad 05.</p>
+    </div>
+
+    <h3 class="sectitle reveal">Conceptos de la teoría que usa el proyecto</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <caption>Teoría del curso vs. implementación real</caption>
+        <thead><tr><th scope="col">Concepto de clase</th><th scope="col">Dónde está en ViajeCheck</th></tr></thead>
+        <tbody>
+          <tr><td>Clean Architecture</td><td>4 proyectos separados: Domain, Application, Infrastructure, WebAPI</td></tr>
+          <tr><td>CQRS (separar lecturas/escrituras)</td><td>Carpetas <code>Commands</code> (escribir) y <code>Queries</code> (leer) + MediatR</td></tr>
+          <tr><td>SOLID · SRP</td><td>Cada handler maneja un solo comando o query</td></tr>
+          <tr><td>SOLID · OCP</td><td>Un feature nuevo = crear Command + Handler, sin tocar lo existente</td></tr>
+          <tr><td>SOLID · LSP</td><td><code>Traveler</code>, <code>Agent</code> y <code>Admin</code> heredan de <code>User</code></td></tr>
+          <tr><td>SOLID · ISP</td><td>Interfaces pequeñas: <code>IUserRepository</code>, <code>ITravelRepository</code></td></tr>
+          <tr><td>SOLID · DIP</td><td>Domain define interfaces; Infrastructure las implementa; WebAPI inyecta</td></tr>
+          <tr><td>Patrón Repository</td><td><code>Repositories/</code> en Infrastructure + <code>IUnitOfWork</code></td></tr>
+          <tr><td>ORM</td><td>Entity Framework Core 8 + SQL Server / PostgreSQL</td></tr>
+          <tr><td>Manejo de errores centralizado</td><td><code>ExceptionMiddleware</code> + excepciones de dominio (clase 4)</td></tr>
+          <tr><td>Autenticación JWT</td><td><code>LoginCommand</code> + token <code>Bearer</code> en el frontend</td></tr>
+          <tr><td>Validación de comandos</td><td>FluentValidation (validadores por feature)</td></tr>
+          <tr><td>Testing (pirámide)</td><td>xUnit + Moq: tests de <code>Handlers</code>, <code>Validators</code> y <code>Domain</code></td></tr>
+          <tr><td>DevOps / CI</td><td>GitHub Actions: build + test + cobertura; deploy en Railway</td></tr>
+          <tr><td>SPA con framework</td><td>Angular 16 con módulos lazy-loaded, guards e interceptor JWT</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sectitle reveal">CQRS en código: un command y su handler</h3>
+    <p style="color:var(--text-soft);font-size:17px;max-width:840px">Así se ve el flujo de escritura del login. El controller delega en MediatR; el handler es la única pieza que conoce la lógica.</p>
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">LoginCommand.cs · un comando (escribir / autenticar)</span></div>
+<pre><code><span class="c-key">public class</span> LoginCommand : IRequest&lt;string&gt;
+{
+    <span class="c-key">public string</span> Email { <span class="c-key">get; set;</span> }
+    <span class="c-key">public string</span> Password { <span class="c-key">get; set;</span> }
+}
+
+<span class="c-key">public class</span> LoginHandler : IRequestHandler&lt;LoginCommand, string&gt;
+{
+    <span class="c-key">private readonly</span> IAuthService _authService;
+
+    <span class="c-key">public</span> LoginHandler(IAuthService authService) =&gt; _authService = authService;
+
+    <span class="c-key">public async Task</span>&lt;string&gt; Handle(LoginCommand request, CancellationToken ct)
+    {
+        <span class="c-key">var</span> token = <span class="c-key">await</span> _authService.LoginAsync(request.Email, request.Password);
+
+        <span class="c-key">if</span> (string.IsNullOrEmpty(token))
+            <span class="c-key">throw new</span> InvalidCredentialsException();  <span class="c-com">// → ExceptionMiddleware</span>
+
+        <span class="c-key">return</span> token;
+    }
+}</code></pre>
+    </div>
+
+    <h3 class="sectitle reveal">Dominio con Value Objects (clase 2 y 7)</h3>
+    <p style="color:var(--text-soft);font-size:17px;max-width:840px">No todo en el dominio es una entidad: conceptos como email, teléfono o documento son <b>value objects</b> que encapsulan su propia validación.</p>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Domain</span><h3>Entidades</h3><p><code>Travel</code>, <code>Reservation</code>, <code>Client</code>, <code>User</code> y sus roles heredados (<code>Traveler</code>, <code>Agent</code>, <code>Admin</code>).</p></div>
+      <div class="card cyan"><span class="tag">Domain</span><h3>Value Objects</h3><p><code>Email</code>, <code>PhoneNumber</code>, <code>Address</code>, <code>Document</code>: datos con reglas propias, sin identidad.</p></div>
+      <div class="card"><span class="tag">Domain</span><h3>Enums</h3><p><code>UserRole</code>, <code>TravelType</code>, <code>ReservationStatus</code>, <code>NotificationType</code>.</p></div>
+    </div>
+
+    <h3 class="sectitle reveal">Seguridad: el frontend protege las rutas</h3>
+    <div class="grid g2 reveal">
+      <div class="card">
+        <span class="tag">Angular · guard</span>
+        <h3>AuthGuard</h3>
+        <p>Si no hay sesión, redirige a <code>/auth/login</code>. Protege las rutas del panel.</p>
+      </div>
+      <div class="card cyan">
+        <span class="tag">Angular · interceptor</span>
+        <h3>AuthInterceptor</h3>
+        <p>Agrega <code>Authorization: Bearer {token}</code> a cada petición HTTP automáticamente.</p>
+      </div>
+    </div>
+
+    <div class="codeblock reveal">
+      <div class="cb-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">auth.interceptor.ts · JWT en cada petición (clase 4)</span></div>
+<pre><code><span class="c-key">intercept</span>(req: HttpRequest&lt;any&gt;, next: HttpHandler) {
+  <span class="c-key">const</span> token = <span class="c-key">this</span>.authService.getToken();
+  <span class="c-key">if</span> (token) {
+    req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  }
+  <span class="c-key">return</span> next.handle(req);
+}</code></pre>
+    </div>
+
+    <h3 class="sectitle reveal">DevOps y despliegue</h3>
+    <div class="grid g3 reveal">
+      <div class="card"><span class="tag">Contenedores</span><h3>Docker</h3><p><code>Dockerfile</code> en backend y frontend; imagen portable para producción.</p></div>
+      <div class="card cyan"><span class="tag">CI/CD</span><h3>GitHub Actions</h3><p>En cada push/PR a master: restore → build → test → cobertura → publish.</p></div>
+      <div class="card"><span class="tag">Deploy</span><h3>Railway</h3><p>Despliegue en la nube con <code>railway.json</code>; el merge a master redeployea solo.</p></div>
+    </div>
+
+    <div class="note reveal">
+      <b>Recorrido completo de una petición:</b> Angular (AuthInterceptor agrega el JWT) → Controller de la WebAPI → MediatR envía el Command → Handler (Application) → Repositorio (Infrastructure) → Base de datos. Si algo falla, el ExceptionMiddleware devuelve un JSON limpio en vez de un crash.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div>
+      <h4>Diseño y Arquitectura de Software</h4>
+      <p style="margin:0;max-width:420px;font-size:16px">Resumen visual del material de clase, consolidando las 7 unidades en una sola guía de repaso.</p>
+    </div>
+    <div>
+      <h4>Índice de unidades</h4>
+      <ul>
+        <li><a href="#fundamentos">01 · Fundamentos y UML</a></li>
+        <li><a href="#persistencia">02 · Persistencia</a></li>
+        <li><a href="#seguridad">03 · Seguridad y errores</a></li>
+        <li><a href="#estilos">04 · Estilos arquitectónicos</a></li>
+        <li><a href="#patrones">05 · Patrones</a></li>
+        <li><a href="#frameworks">06 · Frameworks</a></li>
+        <li><a href="#diseno">07 · SOLID y calidad</a></li>
+        <li><a href="#proyecto">08 · Proyecto ViajeCheck</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-note">
+    <span>UNIBE · Departamento de Ingeniería de Sistemas · 2026</span>
+    <span>Hecho como guía de estudio · tema: Arquitectura de Software</span>
+  </div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  "use strict";
+
+  var burger=document.getElementById("burger");
+  var sidebar=document.getElementById("sidebar");
+  if(burger&&sidebar){
+    burger.addEventListener("click",function(){
+      var open=sidebar.classList.toggle("open");
+      burger.setAttribute("aria-expanded",open?"true":"false");
+      burger.setAttribute("aria-label",open?"Cerrar menú":"Abrir menú");
+      var openIc=burger.querySelector(".ic-open");
+      var closeIc=burger.querySelector(".ic-close");
+      if(openIc&&closeIc){openIc.style.display=open?"none":"block";closeIc.style.display=open?"block":"none";}
+    });
+    sidebar.addEventListener("click",function(e){
+      if(e.target.tagName==="A"){
+        sidebar.classList.remove("open");
+        burger.setAttribute("aria-expanded","false");
+        burger.setAttribute("aria-label","Abrir menú");
+        var o=burger.querySelector(".ic-open"),c=burger.querySelector(".ic-close");
+        if(o&&c){o.style.display="block";c.style.display="none";}
+      }
+    });
+  }
+
+  /* Tabs */
+  document.querySelectorAll(".tabs").forEach(function(tabs){
+    var btns=tabs.querySelectorAll('[role="tab"]');
+    var panels=tabs.querySelectorAll('[role="tabpanel"]');
+    btns.forEach(function(btn){
+      btn.addEventListener("click",function(){
+        btns.forEach(function(b){b.setAttribute("aria-selected","false");b.setAttribute("tabindex","-1");});
+        panels.forEach(function(p){p.hidden=true;});
+        btn.setAttribute("aria-selected","true");btn.setAttribute("tabindex","0");
+        var id=btn.getAttribute("aria-controls");
+        var panel=document.getElementById(id);
+        if(panel){panel.hidden=false;}
+        btn.focus();
+      });
+    });
+    tabs.addEventListener("keydown",function(e){
+      if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft")return;
+      var idx=Array.prototype.indexOf.call(btns,document.activeElement);
+      if(idx<0)return;
+      var next=e.key==="ArrowRight"?((idx+1)%btns.length):((idx-1+btns.length)%btns.length);
+      btns[next].click();
+      e.preventDefault();
+    });
+  });
+
+  /* Reveal on scroll */
+  var revealEls=document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}});
+    },{threshold:.06,rootMargin:"0px 0px -40px 0px"});
+    revealEls.forEach(function(el){io.observe(el);});
+  }else{
+    revealEls.forEach(function(el){el.classList.add("in");});
+  }
+
+  /* Back to top */
+  var toTop=document.getElementById("toTop");
+  window.addEventListener("scroll",function(){
+    if(window.scrollY>600){toTop.classList.add("show");}else{toTop.classList.remove("show");}
+  },{passive:true});
+  toTop.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+})();
+</script>
+</body>
+</html>
