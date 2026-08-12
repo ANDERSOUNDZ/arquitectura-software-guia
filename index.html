@@ -5,373 +5,390 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diseño y Arquitectura de Software · Resumen</title>
 <meta name="description" content="Resumen visual de Diseño y Arquitectura de Software: calidad, UML, persistencia, seguridad, estilos, patrones, frameworks, SOLID y calidad.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0e0f12">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff5500'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='16' font-weight='bold' fill='%230e0f12' text-anchor='middle'%3ESW%3C/text%3E%3C/svg%3E">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#42598e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2342598e'/%3E%3Ctext x='16' y='23' font-family='Arial,sans-serif' font-size='15' font-weight='bold' fill='%23fff' text-anchor='middle'%3ESW%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 :root{
-  --bg:#0e0f12;
-  --bg-2:#12141a;
-  --card:#1a1d24;
-  --card-2:#20242c;
-  --elev:#252a33;
-  --border:#2b313c;
-  --border-2:#333a46;
-  --text:#f2f2f4;
-  --text-soft:#b6bcc6;
-  --text-dim:#8a93a1;
-  --primary:#ff5500;
-  --primary-soft:#ff6a1f;
-  --primary-fill:#d63d00;
-  --primary-dim:rgba(255,85,0,.12);
-  --blue:#8fb0ff;
-  --blue-soft:rgba(126,166,255,.12);
-  --green:#3ec58f;
-  --green-soft:rgba(46,189,133,.12);
-  --red:#ff8a84;
-  --red-soft:rgba(255,107,99,.12);
-  --amber:#ffc48a;
-  --amber-soft:rgba(255,184,107,.12);
-  --radius:12px;
-  --radius-sm:8px;
-  --maxw:1080px;
-  --font-display:'Space Grotesk',system-ui,sans-serif;
-  --font-body:'Inter',system-ui,-apple-system,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,monospace;
-  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+  --blue:#42598e;
+  --blue-hi5:#336699;
+  --blue-dark:#2b4a75;
+  --orange:#b84f00;
+  --orange-hi5:#ff8800;
+  --link:#085098;
+  --link-hover:#ee6700;
+  --gray:#666666;
+  --gray-dark:#333333;
+  --gray-line:#cccccc;
+  --gray-line-2:#999999;
+  --bg:#eef2f8;
+  --surface:#ffffff;
+  --surface-2:#f6f8fb;
+  --radius:0px;
+  --radius-lg:0px;
+  --maxw:1120px;
+  --font-body:Verdana,Arial,Helvetica,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --shadow:0 1px 2px rgba(0,0,0,.1);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px;-webkit-text-size-adjust:100%}
 body{
   margin:0;
   font-family:var(--font-body);
-  color:var(--text);
+  font-size:13px;
+  color:var(--gray-dark);
   background:var(--bg);
-  line-height:1.7;
-  font-size:18px;
-  -webkit-font-smoothing:antialiased;
-}
-body::before{
-  content:"";
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(1000px 500px at 70% -10%, rgba(255,85,0,.06), transparent 60%),
-    radial-gradient(800px 400px at 0% 20%, rgba(126,166,255,.04), transparent 60%);
+  line-height:1.55;
+  background-image:linear-gradient(to right,rgba(51,102,153,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(51,102,153,.05) 1px,transparent 1px);
+  background-size:40px 40px;
 }
 img{max-width:100%;height:auto}
-a{color:var(--primary)}
+a{color:var(--link);text-decoration:none;font-weight:bold}
+a:hover{color:var(--link-hover);text-decoration:underline}
 a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{
-  outline:3px solid var(--primary);
+  outline:2px solid var(--link-hover);
   outline-offset:2px;
-  border-radius:4px;
 }
-::selection{background:var(--primary-fill);color:#fff}
+::selection{background:var(--blue);color:#fff}
 
 /* ---------- Skip link ---------- */
 .skip-link{
   position:absolute;left:16px;top:-60px;z-index:200;
-  background:var(--primary-fill);color:#fff;padding:12px 18px;border-radius:8px;
-  font-weight:600;transition:top .2s ease;
+  background:var(--blue);color:#fff;padding:10px 16px;font-weight:bold;transition:top .2s ease;
 }
 .skip-link:focus{top:14px}
 
 /* ---------- Sidebar (menú vertical) ---------- */
 .sidebar{
   position:fixed;top:0;left:0;bottom:0;z-index:100;
-  width:248px;background:var(--bg-2);
-  border-right:1px solid var(--border);
+  width:250px;
+  background:var(--surface);
+  border-right:1px solid var(--gray-line);
   display:flex;flex-direction:column;
   transform:none;
 }
 .sidebar-brand{
-  display:flex;align-items:center;gap:12px;
-  padding:18px 20px;border-bottom:1px solid var(--border);
-  font-family:var(--font-display);font-weight:700;color:#fff;font-size:15.5px;text-decoration:none;
+  display:flex;align-items:center;gap:10px;
+  padding:16px 16px;
+  font-family:var(--font-body);font-weight:bold;color:#fff;font-size:14px;text-decoration:none;
+  background:linear-gradient(#5a77a8,#336699);
+  border-bottom:2px solid #2b4a75;
 }
 .brand-badge{
-  width:40px;height:40px;flex:none;border-radius:11px;background:var(--primary-fill);
-  display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;color:#fff;
+  width:36px;height:36px;flex:none;
+  background:#ff8800;color:#fff;
+  display:grid;place-items:center;font-family:var(--font-body);font-weight:bold;font-size:15px;
+  border:1px solid #cc6d00;
 }
-.sidebar-brand small{display:block;font-family:var(--font-body);font-weight:400;font-size:11.5px;color:var(--text-dim);letter-spacing:.3px;margin-top:2px}
-.sidebar nav{flex:1;overflow-y:auto;padding:14px 10px}
+.sidebar-brand small{display:block;font-family:var(--font-body);font-weight:normal;font-size:10px;color:#d7e0f0;margin-top:1px}
+.sidebar nav{flex:1;overflow-y:auto;padding:12px 10px}
 .sidebar nav ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .sidebar nav a{
-  display:flex;align-items:center;gap:12px;
-  color:var(--text-soft);text-decoration:none;font-size:15px;font-weight:500;
-  padding:11px 13px;border-radius:9px;transition:color .12s ease,background .12s ease;
+  display:flex;align-items:center;gap:10px;
+  color:var(--gray-dark);text-decoration:none;font-size:12.5px;font-weight:bold;
+  padding:8px 10px;transition:background .1s ease,color .1s ease;
 }
-.sidebar nav a .num{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);min-width:20px}
-.sidebar nav a:hover{color:#fff;background:var(--elev)}
-.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);line-height:1.6}
+.sidebar nav a .num{font-family:var(--font-mono);font-size:10px;color:#ffffff;min-width:20px;height:20px;display:grid;place-items:center;background:#5a77a8;font-weight:600}
+.sidebar nav a:hover{background:#e8eef6;color:var(--link);text-decoration:none}
+.sidebar nav a:hover .num{background:var(--link-hover)}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--gray-line);font-family:var(--font-mono);font-size:10px;color:var(--gray);line-height:1.6;background:var(--surface-2)}
 .burger{
-  position:fixed;top:14px;left:14px;z-index:110;
-  background:var(--card);border:1px solid var(--border-2);
-  color:var(--text);border-radius:10px;width:44px;height:44px;cursor:pointer;
+  position:fixed;top:12px;left:12px;z-index:110;
+  background:linear-gradient(#5a77a8,#336699);border:1px solid #2b4a75;
+  color:#fff;width:42px;height:42px;cursor:pointer;
   align-items:center;justify-content:center;display:none;
 }
-.burger svg{width:22px;height:22px;pointer-events:none}
+.burger svg{width:20px;height:20px;pointer-events:none}
 .burger .ic-close{display:none}
 @media(min-width:901px){
-  main{margin-left:248px}
-  footer{margin-left:248px}
+  main{margin-left:250px}
+  footer{margin-left:250px}
   .burger{display:none}
 }
 @media(max-width:900px){
-  .sidebar{transform:translateX(-100%);transition:transform .25s ease}
-  .sidebar.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.5)}
+  .sidebar{transform:translateX(-100%);transition:transform .2s ease}
+  .sidebar.open{transform:none;box-shadow:0 0 24px rgba(0,0,0,.25)}
   .burger{display:flex}
-  main{transition:filter .25s ease}
 }
 
 /* ---------- Hero ---------- */
 .hero{
   position:relative;z-index:1;
-  background:linear-gradient(180deg,#12141a 0%,var(--bg) 100%);
-  border-bottom:1px solid var(--border);
-  overflow:hidden;
+  background:linear-gradient(#5a77a8,#336699 55%,#2b4a75);
+  border-bottom:3px solid var(--orange-hi5);
 }
-.hero-inner{max-width:var(--maxw);margin:0 auto;padding:64px 20px 72px;position:relative}
+.hero-inner{max-width:var(--maxw);margin:0 auto;padding:52px 24px 58px;position:relative}
 .eyebrow{
-  font-family:var(--font-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--primary);display:flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:#ffd9a8;display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,.2);padding:4px 10px;
   animation:heroUp .6s ease both;
 }
-.eyebrow::before{content:"";width:34px;height:2px;background:var(--primary-fill)}
 .hero h1{
-  font-family:var(--font-display);font-size:clamp(36px,6vw,62px);
-  line-height:1.05;margin:18px 0 16px;color:#fff;text-wrap:balance;
+  font-family:var(--font-body);font-size:clamp(32px,5vw,50px);
+  line-height:1.08;margin:14px 0 12px;color:#fff;text-wrap:balance;font-weight:bold;
+  text-shadow:2px 2px 0 rgba(0,0,0,.25);
   animation:heroUp .6s .08s ease both;
 }
-.hero h1 .accent{color:var(--primary)}
+.hero h1 .accent{color:#ffb44a}
 .hero .lede{
-  max-width:660px;font-size:clamp(17px,2vw,20px);color:var(--text-soft);margin:0 0 32px;
+  max-width:660px;font-size:15px;color:#e2e9f4;margin:0 0 26px;
   animation:heroUp .6s .16s ease both;
 }
-.hero-stats{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 36px;animation:heroUp .6s .24s ease both}
+.hero-stats{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px;animation:heroUp .6s .24s ease both}
 .hero-stats .stat{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:10px;padding:12px 16px;
+  background:#fff;border:1px solid #ffffff;padding:8px 14px;
+  box-shadow:1px 1px 0 rgba(0,0,0,.2);
 }
-.hero-stats .stat b{display:block;font-family:var(--font-display);font-size:26px;color:#fff}
-.hero-stats .stat span{font-size:13px;color:var(--text-dim)}
-.hero-cta{display:flex;flex-wrap:wrap;gap:12px;animation:heroUp .6s .32s ease both}
-@keyframes heroUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero-stats .stat b{display:block;font-family:var(--font-body);font-size:24px;color:var(--blue-hi5);font-weight:bold}
+.hero-stats .stat span{font-size:11px;color:var(--gray);font-weight:bold}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;animation:heroUp .6s .32s ease both}
+@keyframes heroUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-body);font-weight:600;font-size:16px;
-  padding:14px 22px;border-radius:10px;text-decoration:none;cursor:pointer;
-  border:1px solid transparent;transition:transform .12s ease,box-shadow .12s ease,background .12s ease,color .12s ease;
+  font-family:var(--font-body);font-weight:bold;font-size:13px;
+  padding:8px 16px;cursor:pointer;text-decoration:none;
+  border:1px solid;transition:background .1s ease;
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .btn:active{transform:translateY(1px)}
-.btn-primary{background:var(--primary-fill);color:#fff}
-.btn-primary:hover{background:var(--primary-soft);box-shadow:0 8px 22px -8px rgba(255,85,0,.55)}
-.btn-ghost{background:var(--card);color:var(--text);border-color:var(--border-2)}
-.btn-ghost:hover{background:var(--elev);color:#fff}
+.btn-primary{background:linear-gradient(#ffb44a,#ff8800);border-color:#cc6d00;color:#4a2e00}
+.btn-primary:hover{background:linear-gradient(#ffc46b,#ff9900);text-decoration:none;color:#4a2e00}
+.btn-ghost{background:rgba(255,255,255,.12);border-color:#9db4d6;color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.22);text-decoration:none;color:#fff}
 
 /* Layered diagram */
 .layer-demo{max-width:400px;margin:8px auto 0}
 .layer-box{
-  border:1px solid var(--border-2);background:var(--card);color:var(--text-soft);
-  text-align:center;padding:12px 10px;border-radius:8px;font-size:14.5px;font-weight:500;
+  background:#fff;color:var(--gray-dark);
+  border:1px solid #ffffff;border-left:4px solid #ff8800;
+  text-align:center;padding:10px 10px;font-size:12.5px;font-weight:bold;
+  box-shadow:1px 1px 0 rgba(0,0,0,.2);
 }
-.layer-box .code{font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);display:block;margin-top:3px}
-.layer-flow{height:20px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.layer-flow i{display:block;width:2px;height:100%;background:linear-gradient(to bottom,var(--primary),#ffb98a)}
-.layer-flow i{animation:flowPulse 1.6s ease-in-out infinite}
-@keyframes flowPulse{0%,100%{opacity:.35}50%{opacity:1}}
-.layer-box.hl{border-color:var(--primary);color:#ffd9c2;background:var(--primary-dim)}
-.layer-box.hl .code{color:#ffb98a}
+.layer-box .code{font-family:var(--font-mono);font-size:10.5px;color:var(--gray);display:block;margin-top:3px;font-weight:400}
+.layer-flow{height:16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.layer-flow i{display:block;width:3px;border-radius:3px;height:100%;background:#ffb44a}
+.layer-flow i{animation:flowPulse 1.5s ease-in-out infinite}
+@keyframes flowPulse{0%,100%{opacity:.45}50%{opacity:1}}
+.layer-box.hl{border-color:#fff;background:#fff4e0;color:#7a5200}
+.layer-box.hl .code{color:#b0802a}
 .hero-side{display:grid;gap:0;animation:heroUp .7s .4s ease both}
 @media(min-width:920px){
-  .hero-inner{display:grid;grid-template-columns:1.35fr .85fr;gap:40px;align-items:center}
+  .hero-inner{display:grid;grid-template-columns:1.35fr .85fr;gap:48px;align-items:center}
 }
 
 /* ---------- Layout helpers ---------- */
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px;position:relative;z-index:1}
-.section{padding:72px 0 26px;position:relative;z-index:1}
-.sec-head{margin-bottom:36px;max-width:840px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.section{padding:56px 0 16px;position:relative;z-index:1}
+.sec-head{margin-bottom:28px;max-width:860px}
 .sec-num{
-  font-family:var(--font-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);
-  display:flex;align-items:center;gap:10px;font-weight:600;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:#fff;display:inline-flex;align-items:center;gap:8px;font-weight:600;
+  background:linear-gradient(#5a77a8,#336699);padding:4px 10px;border-bottom:2px solid #2b4a75;
 }
-.sec-num::before{content:"";width:26px;height:2px;background:var(--primary-fill)}
-.sec-num .dim{color:var(--text-dim)}
+.sec-num .dim{color:#c7d4ea}
 h2{
-  font-family:var(--font-display);font-size:clamp(28px,3.8vw,40px);
-  margin:10px 0 12px;line-height:1.15;text-wrap:balance;color:#fff;
+  font-family:var(--font-body);font-size:clamp(24px,3.2vw,32px);
+  margin:12px 0 8px;line-height:1.12;text-wrap:balance;color:var(--blue-dark);font-weight:bold;
 }
-.lead{color:var(--text-soft);font-size:19px;margin:0;line-height:1.7}
-.lead strong{color:#fff}
-h3.sectitle{font-family:var(--font-display);font-size:clamp(22px,2.6vw,28px);margin:34px 0 16px;color:#fff}
+.lead{color:var(--gray);font-size:14.5px;margin:0;line-height:1.6}
+.lead strong{color:var(--blue-dark)}
+h3.sectitle{
+  font-family:var(--font-body);font-size:clamp(19px,2.4vw,23px);margin:34px 0 14px;color:var(--blue-dark);font-weight:bold;
+  border-left:4px solid var(--orange-hi5);padding-left:10px;
+}
 
-/* "En simple" callout */
+/* "En simple" callout (Hi5 window, fondo amarillo) */
 .simple{
-  margin-top:20px;background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:18px 22px;font-size:17.5px;color:var(--text-soft);
+  margin-top:16px;background:linear-gradient(#fdf3d8,#fbf0cd);border:1px solid var(--gray-line);
+  border-top:1px solid #fff;padding:14px 18px;font-size:13.5px;color:var(--gray-dark);
+  box-shadow:var(--shadow);
 }
 .simple b{
-  color:var(--primary);font-family:var(--font-display);text-transform:uppercase;letter-spacing:.06em;
-  font-size:13px;display:inline-block;margin-bottom:6px;
+  color:var(--orange);font-family:var(--font-body);text-transform:uppercase;letter-spacing:.04em;
+  font-size:11px;display:inline-block;margin-bottom:6px;font-weight:bold;
 }
-.simple p{margin:0;color:var(--text-soft)}
-.simple code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+.simple p{margin:0;color:var(--gray-dark)}
+.simple code{background:#fff;border:1px solid var(--gray-line);padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--link)}
 
-/* Cards grid */
-.grid{display:grid;gap:16px}
+/* Cards grid — todas iguales (sin variante cyan) */
+.grid{display:grid;gap:14px}
 .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
-.g4{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
 .card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  padding:20px 20px 18px;box-shadow:var(--shadow-card);
-  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+  position:relative;
+  background:var(--surface);border:1px solid var(--gray-line);border-top:3px solid var(--blue-hi5);
+  padding:16px 16px 14px;box-shadow:var(--shadow);
+  transition:box-shadow .12s ease;
 }
-.card:hover{transform:translateY(-2px);border-color:var(--border-2);background:var(--card-2)}
+.card:hover{box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .card .tag{
-  font-family:var(--font-mono);font-size:12px;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;
-  display:block;margin-bottom:8px;
+  font-family:var(--font-mono);font-size:10px;color:#fff;text-transform:uppercase;letter-spacing:.06em;
+  display:inline-block;margin-bottom:8px;background:#7b95c4;padding:2px 8px;font-weight:600;
 }
-.card.cyan .tag{color:var(--primary)}
-.card h3{font-family:var(--font-display);font-size:19px;margin:0 0 8px;line-height:1.3;color:#fff}
-.card p{margin:0 0 10px;font-size:16px;color:var(--text-soft)}
-.card .mini{margin-top:8px;border-top:1px solid var(--border);padding-top:10px;font-size:15px;color:var(--text-dim)}
-.card .mini b{color:var(--blue)}
-.card code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+.card h3{font-family:var(--font-body);font-size:16px;margin:0 0 6px;line-height:1.3;color:var(--blue-dark);font-weight:bold}
+.card p{margin:0 0 8px;font-size:12.5px;color:var(--gray)}
+.card .mini{margin-top:8px;border-top:1px dashed var(--gray-line);padding-top:8px;font-size:11.5px;color:var(--gray)}
+.card .mini b{color:var(--blue-hi5)}
+.card code{background:#eef2f8;border:1px solid var(--gray-line);padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--link)}
 
-/* Callout info */
+/* Callout info (Hi5 window azul) */
 .note{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:16px 20px;font-size:16.5px;color:var(--text-soft);
+  background:linear-gradient(#e6edf7,#dbe5f3);border:1px solid var(--gray-line);
+  border-left:4px solid var(--blue-hi5);padding:14px 18px;font-size:13.5px;color:var(--gray-dark);
+  box-shadow:var(--shadow);
 }
-.note b{color:var(--primary);font-weight:600}
-.note code{background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
+.note b{color:var(--blue-dark);font-weight:bold}
+.note code{background:#fff;border:1px solid var(--gray-line);padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--link)}
 
 /* Tables */
-.table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card)}
-table{width:100%;border-collapse:collapse;font-size:15.5px;min-width:640px}
-caption{text-align:left;padding:16px 18px 6px;font-family:var(--font-display);font-weight:600;font-size:17px;color:#fff}
-th{
-  text-align:left;padding:13px 16px;background:var(--bg-2);font-size:13px;
-  text-transform:uppercase;letter-spacing:.06em;color:var(--text-soft);border-bottom:1px solid var(--border);
-  font-family:var(--font-mono);font-weight:600;white-space:nowrap;
+.table-wrap{
+  overflow-x:auto;background:var(--surface);border:1px solid var(--gray-line);
+  box-shadow:var(--shadow);
 }
-td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text-soft)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+caption{text-align:left;padding:12px 14px 6px;font-family:var(--font-body);font-weight:bold;font-size:15px;color:var(--blue-dark)}
+th{
+  text-align:left;padding:9px 12px;font-size:11px;
+  text-transform:uppercase;letter-spacing:.04em;color:#fff;border-bottom:2px solid #2b4a75;
+  font-family:var(--font-mono);font-weight:600;white-space:nowrap;
+  background:linear-gradient(#5a77a8,#336699);
+}
+td{padding:9px 12px;border-bottom:1px solid var(--gray-line);vertical-align:top;color:var(--gray-dark)}
 tr:last-child td{border-bottom:none}
-td code{background:var(--bg-2);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--amber)}
-tr:nth-child(even) td{background:var(--bg-2)}
+td code{background:#eef2f8;padding:1px 5px;font-family:var(--font-mono);font-size:.9em;color:var(--link)}
+tr:nth-child(even) td{background:var(--surface-2)}
 
 /* Code blocks */
 .codeblock{
-  background:var(--bg-2);color:var(--text);border-radius:var(--radius);overflow:hidden;
-  border:1px solid var(--border);margin:18px 0;
+  background:#1e2431;color:#d6deea;overflow:hidden;
+  border:1px solid var(--gray-line);margin:16px 0;box-shadow:var(--shadow);
 }
 .codeblock .cb-head{
-  display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);
-  font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);
+  display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #3a4357;
+  font-family:var(--font-mono);font-size:11px;color:#9fb0c9;background:#262e3d;
 }
-.codeblock .cb-head .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.codeblock .cb-head .dot.r{background:#ff5f57}.codeblock .cb-head .dot.y{background:#febc2e}.codeblock .cb-head .dot.g{background:#28c840}
+.codeblock .cb-head .dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.3)}
+.codeblock .cb-head .dot.r{background:#ff5f57}.codeblock .cb-head .dot.y{background:#ffbd2e}.codeblock .cb-head .dot.g{background:#28c840}
 .codeblock .cb-head .fn{margin-left:auto}
-.codeblock pre{margin:0;padding:18px;overflow-x:auto;font-family:var(--font-mono);font-size:14.5px;line-height:1.65;tab-size:4}
+.codeblock pre{margin:0;padding:16px;overflow-x:auto;font-family:var(--font-mono);font-size:12.5px;line-height:1.6;tab-size:4}
 .codeblock .c-key{color:#7fd4ff}
-.codeblock .c-str{color:#ffe08a}
-.codeblock .c-com{color:#8a99ab;font-style:italic}
+.codeblock .c-str{color:#ffd97a}
+.codeblock .c-com{color:#7f8ea6;font-style:italic}
 .codeblock .c-cls{color:#c9a7ff}
 
 /* Tabs */
-.tabs{margin:24px 0}
-.tab-list{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 16px;padding:0}
+.tabs{margin:20px 0}
+.tab-list{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 14px;padding:0}
 .tab-list button{
-  font-family:var(--font-mono);font-size:13.5px;font-weight:600;
-  background:var(--card);border:1px solid var(--border-2);color:var(--text-soft);
-  padding:10px 15px;border-radius:999px;cursor:pointer;transition:all .12s ease;
+  font-family:var(--font-body);font-size:12px;font-weight:bold;
+  background:var(--surface);border:1px solid var(--gray-line);color:var(--gray);
+  padding:7px 13px;cursor:pointer;transition:all .1s ease;
   touch-action:manipulation;
 }
-.tab-list button[aria-selected="true"]{background:var(--primary-fill);border-color:var(--primary-fill);color:#fff}
-.tab-list button:hover:not([aria-selected="true"]){border-color:var(--primary);color:var(--primary)}
-.tab-panel{animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tab-list button[aria-selected="true"]{
+  background:linear-gradient(#5a77a8,#336699);border-color:#2b4a75;color:#fff;
+}
+.tab-list button:hover:not([aria-selected="true"]){color:var(--link);border-color:#9db4d6}
+.tab-panel{animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* Accordion */
 details.acc{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  margin-bottom:10px;box-shadow:var(--shadow-card);overflow:hidden;
+  background:var(--surface);border:1px solid var(--gray-line);
+  margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden;
 }
 details.acc summary{
-  cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;
-  padding:16px 20px;font-family:var(--font-display);font-weight:600;font-size:18px;color:#fff;
+  cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;font-family:var(--font-body);font-weight:bold;font-size:14px;color:#fff;
+  background:linear-gradient(#5a77a8,#336699);border-bottom:2px solid #2b4a75;
 }
 details.acc summary::-webkit-details-marker{display:none}
-details.acc summary .acc-ic{width:32px;height:32px;flex:none;border-radius:8px;background:var(--primary-dim);display:grid;place-items:center;font-size:16px;color:var(--primary);font-weight:700}
-details.acc summary .arrow{margin-left:auto;transition:transform .2s ease;color:var(--primary);font-size:14px}
+details.acc summary .acc-ic{
+  width:24px;height:24px;flex:none;background:rgba(255,255,255,.2);display:grid;place-items:center;
+  font-size:12px;font-weight:bold;
+}
+details.acc summary .arrow{margin-left:auto;transition:transform .2s ease;font-size:10px}
 details.acc[open] summary .arrow{transform:rotate(180deg)}
-details.acc .acc-body{padding:0 20px 18px 64px;color:var(--text-soft);font-size:16.5px}
+details.acc .acc-body{padding:12px 16px 14px 40px;color:var(--gray-dark);font-size:13px}
 details.acc .acc-body p{margin:0 0 8px}
 details.acc .acc-body ul{margin:4px 0 8px;padding-left:18px}
-details.acc .acc-body li{margin-bottom:8px}
-details.acc .acc-body b{color:var(--blue)}
+details.acc .acc-body li{margin-bottom:6px}
+details.acc .acc-body b{color:var(--blue-dark)}
 
 /* Antipattern / solid rows */
-.row-pair{display:grid;gap:16px}
+.row-pair{display:grid;gap:14px}
 @media(min-width:760px){.row-pair{grid-template-columns:1fr 1fr}}
-.bad,.good{border-radius:var(--radius);padding:16px 18px;font-size:16px;border:1px solid}
-.bad{background:var(--red-soft);border-color:#5b2b28;color:#ffc2be}
-.bad h4{margin:0 0 8px;font-size:14px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;letter-spacing:.05em}
-.good{background:var(--green-soft);border-color:#205a42;color:#bde9d7}
-.good h4{margin:0 0 8px;font-size:14px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;letter-spacing:.05em}
+.bad,.good{padding:14px 16px;font-size:13px;border:1px solid}
+.bad{background:#fdf0f0;border-color:#e0b4b4;color:#7a2a22}
+.bad h4{margin:0 0 6px;font-size:11px;font-family:var(--font-mono);color:#c0392b;text-transform:uppercase;letter-spacing:.04em}
+.good{background:#eff8f1;border-color:#b4d8c2;color:#1f5c3a}
+.good h4{margin:0 0 6px;font-size:11px;font-family:var(--font-mono);color:#278551;text-transform:uppercase;letter-spacing:.04em}
 
 /* SOLID cards */
-.solid-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column}
-.solid-card .solid-top{background:var(--bg-2);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border)}
-.solid-card .letter{width:44px;height:44px;flex:none;border-radius:10px;background:var(--primary-fill);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:24px;color:#fff}
-.solid-card .solid-top h3{margin:0;font-family:var(--font-display);font-size:18px;color:#fff}
-.solid-card .solid-top span{display:block;font-size:13px;color:var(--text-dim)}
-.solid-card .solid-body{padding:16px 18px;font-size:16px;color:var(--text-soft);flex:1}
-.solid-card .solid-body p{margin:0 0 8px}
-.solid-card .solid-ex{padding:14px 18px;border-top:1px solid var(--border);background:var(--bg-2)}
-.solid-card .solid-ex code{font-family:var(--font-mono);font-size:13px;color:var(--amber);display:block;white-space:pre-wrap;line-height:1.5}
-.solid-card.alt .solid-top{background:var(--primary-dim)}
-.solid-card.alt .letter{background:#0e7490}
-
-/* Footer */
-footer{
-  position:relative;z-index:1;background:var(--bg-2);color:var(--text-dim);margin-top:64px;
-  border-top:1px solid var(--border);
+.solid-card{
+  background:var(--surface);border:1px solid var(--gray-line);border-top:3px solid var(--orange-hi5);
+  box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;
 }
-.foot-inner{max-width:var(--maxw);margin:0 auto;padding:38px 20px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;position:relative}
-footer h4{font-family:var(--font-display);color:#fff;margin:0 0 10px;font-size:17px}
-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-footer a{color:var(--text-soft);text-decoration:none;font-size:15px}
-footer a:hover{color:var(--primary);text-decoration:underline}
-.foot-note{max-width:var(--maxw);margin:0 auto;padding:14px 20px 26px;position:relative;font-family:var(--font-mono);font-size:13px;color:var(--text-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.solid-card .solid-top{
+  background:linear-gradient(#5a77a8,#336699);color:#fff;
+  padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #2b4a75;
+}
+.solid-card .letter{
+  width:38px;height:38px;flex:none;
+  background:#ff8800;border:1px solid #cc6d00;display:grid;place-items:center;
+  font-family:var(--font-body);font-weight:bold;font-size:21px;color:#fff;
+}
+.solid-card .solid-top h3{margin:0;font-family:var(--font-body);font-size:15px;color:#fff;font-weight:bold}
+.solid-card .solid-top span{display:block;font-size:10.5px;color:#c7d4ea;font-weight:400}
+.solid-card .solid-body{padding:14px;font-size:12.5px;color:var(--gray);flex:1}
+.solid-card .solid-body p{margin:0 0 8px}
+.solid-card .solid-ex{padding:12px 14px;border-top:1px dashed var(--gray-line);background:var(--surface-2)}
+.solid-card .solid-ex code{font-family:var(--font-mono);font-size:12px;color:var(--link);display:block;white-space:pre-wrap;line-height:1.5}
+.solid-card.alt .solid-top{background:linear-gradient(#8a6db0,#7c5aa5)}
+.solid-card.alt .letter{background:#e67e22;border-color:#c0691a}
+
+/* Footer (estilo Hi5) */
+footer{
+  position:relative;z-index:1;margin-top:56px;
+  background:linear-gradient(#4a6399,#336699 60%,#2b4a75);
+  color:#d9e1ee;border-top:3px solid var(--orange-hi5);
+}
+.foot-inner{max-width:var(--maxw);margin:0 auto;padding:28px 24px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;position:relative}
+footer h4{font-family:var(--font-body);color:#fff;margin:0 0 8px;font-size:14px}
+footer p{font-size:12px;color:#c7d4ea}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+footer a{color:#d7e0f0;font-weight:400;font-size:12px}
+footer a:hover{color:#ffb44a}
+.foot-note{max-width:var(--maxw);margin:0 auto;padding:10px 24px 18px;position:relative;font-family:var(--font-mono);font-size:11px;color:#9fb0c9;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-top:1px solid rgba(255,255,255,.15)}
 
 /* Back to top */
 #toTop{
-  position:fixed;right:18px;bottom:18px;z-index:120;width:48px;height:48px;border-radius:12px;
-  background:var(--primary-fill);color:#fff;border:none;cursor:pointer;
-  font-size:20px;box-shadow:0 8px 24px -8px rgba(0,0,0,.6);opacity:0;pointer-events:none;
+  position:fixed;right:18px;bottom:18px;z-index:120;width:42px;height:42px;
+  background:linear-gradient(#ffb44a,#ff8800);border:1px solid #cc6d00;color:#4a2e00;cursor:pointer;
+  font-size:16px;font-weight:bold;box-shadow:1px 1px 0 rgba(0,0,0,.2);opacity:0;pointer-events:none;
   transition:opacity .2s ease;touch-action:manipulation;
 }
 #toTop.show{opacity:1;pointer-events:auto}
-#toTop:hover{background:var(--primary-soft)}
+#toTop:hover{filter:brightness(1.08)}
 
 /* Reveal on scroll */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease}
 .reveal.in{opacity:1;transform:none}
-.grid.reveal > *{opacity:0;transform:translateY(18px)}
-.grid.reveal.in > *{animation:cardIn .5s ease forwards}
-@keyframes cardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.grid.reveal > *{opacity:0;transform:translateY(14px)}
+.grid.reveal.in > *{animation:cardIn .4s ease forwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .grid.reveal.in > *:nth-child(1){animation-delay:.05s}
-.grid.reveal.in > *:nth-child(2){animation-delay:.12s}
-.grid.reveal.in > *:nth-child(3){animation-delay:.19s}
-.grid.reveal.in > *:nth-child(4){animation-delay:.26s}
-.grid.reveal.in > *:nth-child(5){animation-delay:.33s}
-.grid.reveal.in > *:nth-child(6){animation-delay:.4s}
+.grid.reveal.in > *:nth-child(2){animation-delay:.1s}
+.grid.reveal.in > *:nth-child(3){animation-delay:.15s}
+.grid.reveal.in > *:nth-child(4){animation-delay:.2s}
+.grid.reveal.in > *:nth-child(5){animation-delay:.25s}
+.grid.reveal.in > *:nth-child(6){animation-delay:.3s}
 
 /* Reduced motion */
 @media(prefers-reduced-motion:reduce){
@@ -379,6 +396,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
   .reveal,.grid.reveal > *{opacity:1;transform:none}
 }
+
 </style>
 </head>
 <body>
@@ -466,13 +484,13 @@ footer a:hover{color:var(--primary);text-decoration:underline}
         <p>Qué tan fácil es modificar el sistema. Un sistema mantenible tiene <b>alta cohesión</b> y <b>bajo acoplamiento</b>.</p>
         <div class="mini"><b>Señal:</b> cambiar una regla no rompe lo demás.</div>
       </div>
-      <div class="card cyan">
+      <div class="card">
         <span class="tag">ISO/IEC 25010</span>
         <h3>Escalabilidad</h3>
         <p>Manejar más trabajo añadiendo recursos: más máquinas (<b>horizontal</b>) o más hardware en una sola (<b>vertical</b>).</p>
         <div class="mini"><b>Señal:</b> más tráfico, mismo rendimiento.</div>
       </div>
-      <div class="card cyan">
+      <div class="card">
         <span class="tag">ISO/IEC 25010</span>
         <h3>Disponibilidad</h3>
         <p>Porcentaje de tiempo que el sistema está operativo. "Cinco nueves" (99.999%) son apenas 5 minutos de caída al año.</p>
@@ -570,9 +588,9 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">Conceptos esenciales</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">RDBMS</span><h3>Relacionales</h3><p>Tablas + ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad). PostgreSQL, MySQL.</p></div>
-      <div class="card cyan"><span class="tag">NoSQL</span><h3>Documentales / KV</h3><p>Gran volumen no estructurado o de rápido crecimiento. MongoDB, Redis.</p></div>
+      <div class="card"><span class="tag">NoSQL</span><h3>Documentales / KV</h3><p>Gran volumen no estructurado o de rápido crecimiento. MongoDB, Redis.</p></div>
       <div class="card"><span class="tag">Modelo</span><h3>Entidad-Relación</h3><p>Clave primaria (PK) identifica; clave foránea (FK) relaciona (1:N).</p></div>
-      <div class="card cyan"><span class="tag">Estrategia</span><h3>Connection Pooling</h3><p>Abrir conexiones es caro: se reutilizan conexiones ya abiertas (HikariCP).</p></div>
+      <div class="card"><span class="tag">Estrategia</span><h3>Connection Pooling</h3><p>Abrir conexiones es caro: se reutilizan conexiones ya abiertas (HikariCP).</p></div>
       <div class="card"><span class="tag">Estrategia</span><h3>Réplicas</h3><p>Maestro escribe, esclavos leen. Escala las lecturas pesadas.</p></div>
     </div>
 
@@ -596,7 +614,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">ORM, JPA y Hibernate</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Problema</span><h3>Desfase de impedancia</h3><p>Los objetos (clases, herencia) no encajan con las tablas (columnas, FKs). El ORM es el puente.</p></div>
-      <div class="card cyan"><span class="tag">Estándar</span><h3>JPA</h3><p>Define el contrato: anotaciones <code>@Entity</code>, <code>@Id</code>, <code>@Table</code>. No hace el trabajo real.</p></div>
+      <div class="card"><span class="tag">Estándar</span><h3>JPA</h3><p>Define el contrato: anotaciones <code>@Entity</code>, <code>@Id</code>, <code>@Table</code>. No hace el trabajo real.</p></div>
       <div class="card"><span class="tag">Motor</span><h3>Hibernate</h3><p>Lee las anotaciones JPA y genera el SQL nativo. Es el proveedor más popular.</p></div>
     </div>
     <div class="codeblock reveal">
@@ -626,7 +644,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">Errores y logging</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Excepciones</span><h3>Checked</h3><p>Fallos recuperables externos. El compilador <b>obliga</b> a capturarlas.</p></div>
-      <div class="card cyan"><span class="tag">Excepciones</span><h3>Unchecked</h3><p>Errores de lógica interna. Ocurren en ejecución sin captura forzada.</p></div>
+      <div class="card"><span class="tag">Excepciones</span><h3>Unchecked</h3><p>Errores de lógica interna. Ocurren en ejecución sin captura forzada.</p></div>
       <div class="card"><span class="tag">Logging</span><h3>Niveles de log</h3><p>DEBUG → INFO → WARN → ERROR. El diario de vida de la app.</p></div>
     </div>
     <div class="note reveal">
@@ -636,14 +654,14 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">Tolerancia a fallos</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Patrón</span><h3>Circuit Breaker</h3><p>Como un disyuntor: si el servicio falla mucho, <b>bloquea el tráfico</b> para no colapsar al cliente.</p></div>
-      <div class="card cyan"><span class="tag">Patrón</span><h3>Retry</h3><p>Reintenta peticiones fallidas asumiendo que el error es temporal.</p></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Retry</h3><p>Reintenta peticiones fallidas asumiendo que el error es temporal.</p></div>
       <div class="card"><span class="tag">Patrón</span><h3>Fallback</h3><p>Respuesta degradada pero útil (ej: caché) en lugar de un error.</p></div>
     </div>
 
     <h3 class="sectitle reveal">Autenticación, autorización y JWT</h3>
     <div class="grid g2 reveal">
       <div class="card"><span class="tag">Identidad</span><h3>Autenticación · ¿Quién eres?</h3><p>Validar credenciales y emitir un token firmado.</p></div>
-      <div class="card cyan"><span class="tag">Permisos</span><h3>Autorización · ¿Qué puedes hacer?</h3><p>Leer el token y comprobar el rol (<code>ROLE_ADMIN</code>).</p></div>
+      <div class="card"><span class="tag">Permisos</span><h3>Autorización · ¿Qué puedes hacer?</h3><p>Leer el token y comprobar el rol (<code>ROLE_ADMIN</code>).</p></div>
     </div>
     <div class="tabs reveal">
       <ul class="tab-list" role="tablist" aria-label="Estructura de un JWT">
@@ -665,9 +683,9 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">OWASP Top 10</h3>
     <div class="grid g4 reveal">
       <div class="card"><span class="tag">A01</span><h3>Control de acceso roto</h3><p>Acceder a datos ajenos cambiando un id en la URL. Mitigar: validar en servidor que el <code>sub</code> del JWT sea el dueño.</p></div>
-      <div class="card cyan"><span class="tag">A02</span><h3>Fallos criptográficos</h3><p>Datos sensibles sin cifrar o con algoritmos débiles.</p></div>
+      <div class="card"><span class="tag">A02</span><h3>Fallos criptográficos</h3><p>Datos sensibles sin cifrar o con algoritmos débiles.</p></div>
       <div class="card"><span class="tag">A03</span><h3>Inyección</h3><p>SQLi / XSS: código malicioso dentro de entradas del usuario.</p></div>
-      <div class="card cyan"><span class="tag">A04</span><h3>Diseño inseguro</h3><p>Falta de controles de seguridad desde el diseño.</p></div>
+      <div class="card"><span class="tag">A04</span><h3>Diseño inseguro</h3><p>Falta de controles de seguridad desde el diseño.</p></div>
     </div>
   </div>
 </section>
@@ -767,20 +785,20 @@ footer a:hover{color:var(--primary);text-decoration:underline}
 
     <div class="grid g4 reveal">
       <div class="card"><span class="tag">Patrón</span><h3>En capas</h3><p>Presentación → Negocio → Datos.</p><div class="mini"><b>Cuándo:</b> sistemas tradicionales.</div></div>
-      <div class="card cyan"><span class="tag">Patrón</span><h3>Clean</h3><p>Reglas de negocio al centro, frameworks afuera.</p><div class="mini"><b>Cuándo:</b> sistemas empresariales.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Clean</h3><p>Reglas de negocio al centro, frameworks afuera.</p><div class="mini"><b>Cuándo:</b> sistemas empresariales.</div></div>
       <div class="card"><span class="tag">Patrón</span><h3>Hexagonal</h3><p>Puertos y adaptadores. El negocio no conoce la tecnología.</p><div class="mini"><b>Cuándo:</b> APIs y sistemas que cambian de tecnología.</div></div>
-      <div class="card cyan"><span class="tag">Patrón</span><h3>Onion</h3><p>Dominio en el núcleo, dependencias hacia dentro.</p><div class="mini"><b>Cuándo:</b> apps basadas en dominio.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Onion</h3><p>Dominio en el núcleo, dependencias hacia dentro.</p><div class="mini"><b>Cuándo:</b> apps basadas en dominio.</div></div>
       <div class="card"><span class="tag">Patrón</span><h3>MVC</h3><p>Modelo (datos) / Vista (UI) / Controlador (entrada).</p><div class="mini"><b>Cuándo:</b> CRUD rápido.</div></div>
-      <div class="card cyan"><span class="tag">Patrón</span><h3>CQRS</h3><p>Lecturas (queries) separadas de escrituras (commands).</p><div class="mini"><b>Cuándo:</b> mucha lectura vs escritura.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>CQRS</h3><p>Lecturas (queries) separadas de escrituras (commands).</p><div class="mini"><b>Cuándo:</b> mucha lectura vs escritura.</div></div>
       <div class="card"><span class="tag">Patrón</span><h3>Event-driven</h3><p>Comunicación asíncrona por eventos y colas.</p><div class="mini"><b>Cuándo:</b> microservicios desacoplados.</div></div>
-      <div class="card cyan"><span class="tag">Patrón</span><h3>Microkernel</h3><p>Core mínimo + plugins (IDEs, editores).</p><div class="mini"><b>Cuándo:</b> apps extensibles.</div></div>
+      <div class="card"><span class="tag">Patrón</span><h3>Microkernel</h3><p>Core mínimo + plugins (IDEs, editores).</p><div class="mini"><b>Cuándo:</b> apps extensibles.</div></div>
     </div>
 
     <h3 class="sectitle reveal">Arquitectura Hexagonal (Ports &amp; Adapters)</h3>
     <p style="color:var(--text-soft);font-size:17px;max-width:820px">De Alistair Cockburn (2005). El dominio es el centro; la tecnología se conecta por <b>puertos</b> (interfaces) y <b>adaptadores</b> (implementaciones).</p>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Núcleo</span><h3>Dominio</h3><p>Entidades y reglas de negocio en lenguaje puro, sin imports de Spring/JPA.</p></div>
-      <div class="card cyan"><span class="tag">Contrato</span><h3>Puertos</h3><p>Interfaces de entrada (lo que ofrece) y salida (lo que necesita, ej: guardar).</p></div>
+      <div class="card"><span class="tag">Contrato</span><h3>Puertos</h3><p>Interfaces de entrada (lo que ofrece) y salida (lo que necesita, ej: guardar).</p></div>
       <div class="card"><span class="tag">Implementación</span><h3>Adaptadores</h3><p>REST Controller y JPA Repository traducen el mundo externo al dominio.</p></div>
     </div>
     <div class="note reveal">
@@ -838,7 +856,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
 
     <div class="grid g2 reveal">
       <div class="card"><span class="tag">Tipos</span><h3>Opinados</h3><p>Imponen estructura de carpetas e inyección de dependencias: Spring Boot, NestJS, Laravel.</p></div>
-      <div class="card cyan"><span class="tag">Tipos</span><h3>No opinados (micro)</h3><p>Libertad total, tú creas la estructura: Express, Flask, Gin.</p></div>
+      <div class="card"><span class="tag">Tipos</span><h3>No opinados (micro)</h3><p>Libertad total, tú creas la estructura: Express, Flask, Gin.</p></div>
     </div>
 
     <h3 class="sectitle reveal">Backend en un vistazo</h3>
@@ -860,10 +878,10 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">Frontend y mobile</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">SPA</span><h3>Single Page App</h3><p>Un HTML + JS que renderiza todo en el navegador. Fluido, pero penaliza el SEO.</p></div>
-      <div class="card cyan"><span class="tag">Meta-frameworks</span><h3>SSR / SSG (Next, Nuxt)</h3><p>HTML renderizado en servidor + hidratación. Mejor SEO.</p></div>
+      <div class="card"><span class="tag">Meta-frameworks</span><h3>SSR / SSG (Next, Nuxt)</h3><p>HTML renderizado en servidor + hidratación. Mejor SEO.</p></div>
       <div class="card"><span class="tag">Astro</span><h3>Islas de interactividad</h3><p>HTML estático por defecto; solo las zonas dinámicas cargan JS.</p></div>
       <div class="card"><span class="tag">Framework</span><h3>Angular</h3><p>Completo y opinado: enrutado, HTTP, DI nativos.</p></div>
-      <div class="card cyan"><span class="tag">Librería</span><h3>React</h3><p>Librería flexible de componentes; el resto lo eliges tú.</p></div>
+      <div class="card"><span class="tag">Librería</span><h3>React</h3><p>Librería flexible de componentes; el resto lo eliges tú.</p></div>
       <div class="card"><span class="tag">Mobile</span><h3>Flutter vs React Native</h3><p>Flutter dibuja en canvas propio; React Native usa vistas nativas mapeadas.</p></div>
     </div>
 
@@ -873,7 +891,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
         <p><b>ORM</b> abstrae el SQL (Hibernate, Prisma). <b>ODM</b> mapea documentos NoSQL (Mongoose). <b>SQL Mapper</b> deja el SQL en tus manos (MyBatis).</p>
         <div class="mini">Patrones: <b>Active Record</b> (el objeto se guarda solo, Django) vs <b>Data Mapper</b> (un repositorio guarda, Hibernate).</div>
       </div>
-      <div class="card cyan">
+      <div class="card">
         <span class="tag">Calidad</span><h3>Testing · la pirámide</h3>
         <p><b>Unitarias</b> (JUnit, Jest) — base grande y rápida. <b>Integración</b> (Mockito). <b>E2E</b> (Playwright, Cypress) — pocas y caras.</p>
         <div class="mini">Regla: muchas unitarias, pocas E2E.</div>
@@ -883,7 +901,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
         <p><b>Contenedores</b>: Docker. <b>Orquestación</b>: Kubernetes. <b>CI/CD</b>: GitHub Actions. <b>IaC</b>: Terraform. <b>Config</b>: Ansible.</p>
         <div class="mini">GitOps (ArgoCD): el repo Git es la fuente de verdad del clúster.</div>
       </div>
-      <div class="card cyan">
+      <div class="card">
         <span class="tag">Seguridad</span><h3>Auth moderna</h3>
         <p><b>OAuth2</b> = autorización (scopes). <b>OpenID Connect</b> = autenticación (ID tokens). <b>Keycloak</b> = IAM central con SSO.</p>
         <div class="mini">Spring Security filtra con <code>hasRole('ADMIN')</code>.</div>
@@ -915,7 +933,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
 
     <div class="grid g2 reveal">
       <div class="card"><span class="tag">Nivel</span><h3>Alto nivel (HLD)</h3><p>Estructura general: módulos, base de datos, APIs. Entregables: diagramas C4, diagramas de red.</p></div>
-      <div class="card cyan"><span class="tag">Nivel</span><h3>Bajo nivel (LLD)</h3><p>Detalle técnico: clases, métodos, patrones. Entregables: diagramas de clase UML.</p></div>
+      <div class="card"><span class="tag">Nivel</span><h3>Bajo nivel (LLD)</h3><p>Detalle técnico: clases, métodos, patrones. Entregables: diagramas de clase UML.</p></div>
     </div>
 
     <h3 class="sectitle reveal">Los 5 principios SOLID</h3>
@@ -1099,7 +1117,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <p style="color:var(--text-soft);font-size:17px;max-width:840px">No todo en el dominio es una entidad: conceptos como email, teléfono o documento son <b>value objects</b> que encapsulan su propia validación.</p>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Domain</span><h3>Entidades</h3><p><code>Travel</code>, <code>Reservation</code>, <code>Client</code>, <code>User</code> y sus roles heredados (<code>Traveler</code>, <code>Agent</code>, <code>Admin</code>).</p></div>
-      <div class="card cyan"><span class="tag">Domain</span><h3>Value Objects</h3><p><code>Email</code>, <code>PhoneNumber</code>, <code>Address</code>, <code>Document</code>: datos con reglas propias, sin identidad.</p></div>
+      <div class="card"><span class="tag">Domain</span><h3>Value Objects</h3><p><code>Email</code>, <code>PhoneNumber</code>, <code>Address</code>, <code>Document</code>: datos con reglas propias, sin identidad.</p></div>
       <div class="card"><span class="tag">Domain</span><h3>Enums</h3><p><code>UserRole</code>, <code>TravelType</code>, <code>ReservationStatus</code>, <code>NotificationType</code>.</p></div>
     </div>
 
@@ -1110,7 +1128,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
         <h3>AuthGuard</h3>
         <p>Si no hay sesión, redirige a <code>/auth/login</code>. Protege las rutas del panel.</p>
       </div>
-      <div class="card cyan">
+      <div class="card">
         <span class="tag">Angular · interceptor</span>
         <h3>AuthInterceptor</h3>
         <p>Agrega <code>Authorization: Bearer {token}</code> a cada petición HTTP automáticamente.</p>
@@ -1131,7 +1149,7 @@ footer a:hover{color:var(--primary);text-decoration:underline}
     <h3 class="sectitle reveal">DevOps y despliegue</h3>
     <div class="grid g3 reveal">
       <div class="card"><span class="tag">Contenedores</span><h3>Docker</h3><p><code>Dockerfile</code> en backend y frontend; imagen portable para producción.</p></div>
-      <div class="card cyan"><span class="tag">CI/CD</span><h3>GitHub Actions</h3><p>En cada push/PR a master: restore → build → test → cobertura → publish.</p></div>
+      <div class="card"><span class="tag">CI/CD</span><h3>GitHub Actions</h3><p>En cada push/PR a master: restore → build → test → cobertura → publish.</p></div>
       <div class="card"><span class="tag">Deploy</span><h3>Railway</h3><p>Despliegue en la nube con <code>railway.json</code>; el merge a master redeployea solo.</p></div>
     </div>
 
